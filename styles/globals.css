@@ -32,7 +32,7 @@ button {
 }
 
 button[type="submit"] {
-	@apply mt-3 bg-gray-600 text-white;
+	@apply bg-gray-600 text-white;
 }
 
 .link {

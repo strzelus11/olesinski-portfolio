@@ -3,14 +3,15 @@ import { useState } from "react";
 import { FaInstagram, FaTiktok } from "react-icons/fa";
 import HamburgerButton from "./HamburgerButton";
 import { AnimatePresence, motion } from "framer-motion";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Header() {
 	const link = "transition-all delay-150 duration-500 hover:-translate-y-0.5";
-	const scrollToSection = (id) => {
-		document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-	};
 
 	const [navOpen, setNavOpen] = useState(false);
+    const session = useSession();
+    
+    console.log(session)
 
 	return (
 		<>
@@ -30,6 +31,9 @@ export default function Header() {
 						contact
 					</Link>
 				</div>
+				{session.status === "authenticated" && (
+					<button onClick={signOut}>log out</button>
+				)}
 				<div className="flex items-center gap-7">
 					<Link
 						className={link}
@@ -68,7 +72,7 @@ export default function Header() {
 						className="fixed bg-white inset-0 w-full h-full flex justify-center items-center"
 					>
 						<div className="flex flex-col justify-center items-center gap-5 scale-[2]">
-							<Link href="/photo" className={link}>
+							<Link href="/" className={link}>
 								photo
 							</Link>
 							<Link href="/video" className={link}>

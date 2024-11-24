@@ -1,10 +1,71 @@
 import Layout from "@/components/Layout";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { fadeIn } from "@/motion";
 import { IoMail } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import ErrorMessage from "@/components/ErrorMessage";
 
 export default function ContactPage() {
+	const [firstName, setFirstName] = useState("");
+	const [lastName, setLastName] = useState("");
+	const [email, setEmail] = useState("");
+	const [emailError, setEmailError] = useState(null);
+	const [message, setMessage] = useState("");
+	const [loading, setLoading] = useState(false);
+
+	useEffect(() => {
+		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (email !== "") {
+			if (!regex.test(email)) {
+				setEmailError(true);
+			} else {
+				setEmailError(false);
+			}
+		} else {
+			setEmailError(null);
+		}
+	}, [email]);
+
+	async function sendEmail() {
+		if (name !== "" && email !== "" && message !== "" && !emailError) {
+			setLoading(true);
+			const emailPromise = fetch("/api/send", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					name: firstName + " " + lastName,
+					email,
+					message,
+				}),
+			}).then((response) => {
+				if (response.ok) {
+					return response.json().then((data) => {
+						console.log("Email sent successfully:", data);
+					});
+				} else {
+					return response.json().then((data) => {
+						console.error("Error sending email:", data.error);
+						throw new Error("Błąd przy wysyłaniu emaila");
+					});
+				}
+			});
+
+			await toast
+				.promise(emailPromise, {
+					loading: "Wysyłanie...",
+					success: "Email wysłany pomyślnie!",
+					error: "Błąd przy wysyłaniu emaila",
+				})
+				.finally(() => {
+					setLoading(false);
+				});
+		} else {
+			toast.error("Uzupełnij wszystkie pola.");
+		}
+	}
 	return (
 		<Layout>
 			<div className="flex flex-col sm:grid grid-cols-3 gap-5">
@@ -24,21 +85,54 @@ export default function ContactPage() {
 				>
 					<div>
 						<h1 className="text-3xl font-semibold mb-5">Contact me</h1>
-						<form className="flex flex-col sm:items-start gap-2 max-w-xl">
+						<form
+							onSubmit={sendEmail}
+							className="flex flex-col sm:items-start gap-2 max-w-xl"
+						>
 							<label>Name:</label>
 							<div className="w-full flex gap-2 items-center">
 								<input
+									value={firstName}
+									onChange={(e) => setFirstName(e.target.value)}
 									className="flex-1"
 									type="text"
 									placeholder="First name"
 								/>
-								<input className="flex-1" type="text" placeholder="Last name" />
+								<input
+									value={lastName}
+									onChange={(e) => setLastName(e.target.value)}
+									className="flex-1"
+									type="text"
+									placeholder="Last name"
+								/>
 							</div>
-							<label>Email:</label>
-							<input type="email" />
+							<div className="w-full flex justify-between">
+								<label>Email:</label>
+								<AnimatePresence>
+									{emailError !== null && (
+										<ErrorMessage
+											message={
+												emailError
+													? "Your email is invalid."
+													: "Your email is correct!"
+											}
+											error={emailError}
+										/>
+									)}
+								</AnimatePresence>
+							</div>
+							<input
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								type="email"
+							/>
 							<label>Message:</label>
-							<textarea className="min-h-[10rem]"></textarea>
-							<button type="submit">Submit</button>
+							<textarea
+								value={message}
+								onChange={(e) => setMessage(e.target.value)}
+								className="min-h-[10rem]"
+							></textarea>
+							<button className="mt-3" type="submit">Submit</button>
 						</form>
 					</div>
 					<motion.div
