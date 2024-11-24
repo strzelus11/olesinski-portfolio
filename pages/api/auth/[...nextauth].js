@@ -8,16 +8,12 @@ import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { mongooseConnect } from "@/lib/mongoose";
 
 export const authOptions = {
-	secret: process.env.SECRET,
+	secret: process.env.NEXTAUTH_SECRET,
 	session: {
 		strategy: "jwt",
 	},
 	adapter: MongoDBAdapter(clientPromise),
 	providers: [
-		GoogleProvider({
-			clientId: process.env.GOOGLE_ID,
-			clientSecret: process.env.GOOGLE_SECRET,
-		}),
 		CredentialsProvider({
 			name: "Credentials",
 			id: "credentials",
