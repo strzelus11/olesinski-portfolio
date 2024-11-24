@@ -28,7 +28,7 @@ export default function ContactPage() {
 	}, [email]);
 
 	async function sendEmail() {
-		if (name !== "" && email !== "" && message !== "" && !emailError) {
+		if (email !== "" && message !== "" && !emailError) {
 			setLoading(true);
 			const emailPromise = fetch("/api/send", {
 				method: "POST",
