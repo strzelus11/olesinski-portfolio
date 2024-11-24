@@ -10,8 +10,6 @@ export default function Header() {
 
 	const [navOpen, setNavOpen] = useState(false);
     const session = useSession();
-    
-    console.log(session)
 
 	return (
 		<>

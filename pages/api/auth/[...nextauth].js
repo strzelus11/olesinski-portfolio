@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import { User } from "@/models/User";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import { mongooseConnect } from "@/lib/mongoose";
 
@@ -25,20 +24,36 @@ export const authOptions = {
 				},
 				password: { label: "Password", type: "password" },
 			},
-			async authorize(credentials, req) {
-				const email = credentials?.email;
-				const password = credentials?.password;
+			async authorize(credentials) {
+				const { email, password } = credentials;
 
-				await mongooseConnect();
-				const user = await User.findOne({ email });
+				console.log("Authenticating user:", email);
+				try {
+					await mongooseConnect();
+					console.log("DB connection successful");
 
-				if (user && bcrypt.compareSync(password, user.password)) {
+					const user = await User.findOne({ email });
+					if (!user) {
+						console.log("User not found");
+						return null;
+					}
+
+					console.log("User found, checking password");
+
+					const passwordMatch = bcrypt.compareSync(password, user.password);
+					if (!passwordMatch) {
+						console.log("Password mismatch");
+						return null;
+					}
+
+					console.log("User authenticated successfully");
 					return {
 						id: user._id.toString(),
 						email: user.email,
 						name: user.name,
 					};
-				} else {
+				} catch (error) {
+					console.error("Error during authentication:", error);
 					return null;
 				}
 			},
