@@ -1,10 +1,12 @@
+import { mongooseConnect } from "../../lib/mongoose";
 import { Folder } from "../../models/Folder";
 
 export default async function handler(req, res) {
 	const { method } = req;
 
 	if (method === "GET") {
-		try {
+        try {
+            await mongooseConnect(); 
 			const folders = await Folder.find().sort({ name: 1 });
 			const images = folders.flatMap((folder) => folder.images);
 			res.json(images);

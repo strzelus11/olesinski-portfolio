@@ -40,7 +40,7 @@ export default function PhotoPage() {
 								src={folder.images[0]}
 								alt=""
 							/>
-							<div className="absolute inset-0 bg-black/60 opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
+							<div className="absolute inset-0 bg-black/60 sm:opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
 								<Link
 									className="text-4xl font-bold text-white folder-link"
 									href={`/folders/${folder._id}`}
