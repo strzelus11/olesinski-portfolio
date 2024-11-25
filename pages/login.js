@@ -17,19 +17,28 @@ export default function LoginPage() {
 
 	async function handleFormSubmit(e) {
 		e.preventDefault();
-		setLoading(true);
-		const response = await signIn("credentials", {
-			email,
-			password,
-			redirect: false,
+
+		const loginPromise = new Promise(async (resolve, reject) => {
+			const response = await signIn("credentials", {
+				email,
+				password,
+				redirect: false,
+			});
+
+			if (response.error) {
+				reject(response.error);
+			} else {
+				resolve();
+			}
 		});
-		setLoading(false);
-		if (response.error) {
-			toast.error("Invalid credentials. Try again.");
-		} else {
-			toast.success("Logged in successfully");
-			router.push("/upload");
-		}
+
+		await toast.promise(loginPromise, {
+			loading: "Logging in...",
+			success: "Logged in successfully!",
+			error: "Invalid credentials. Try again.",
+		});
+
+		loginPromise.then(() => router.push("/upload"));
 	}
 
 	// async function register() {
