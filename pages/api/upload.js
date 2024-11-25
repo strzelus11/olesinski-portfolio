@@ -1,4 +1,4 @@
-import { mongooseConnect } from "@/lib/mongoose";
+import { mongooseConnect } from "./lib/mongoose";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import multiparty from "multiparty";
 import fs from "fs";
