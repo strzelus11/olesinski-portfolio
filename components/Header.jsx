@@ -11,6 +11,15 @@ export default function Header() {
 	const [navOpen, setNavOpen] = useState(false);
 	const session = useSession();
 
+    useEffect(() => {
+			if (navOpen) {
+				document.body.classList.add("overflow-hidden");
+			} else {
+				document.body.classList.remove("overflow-hidden");
+			}
+			return () => document.body.classList.remove("overflow-hidden");
+		}, [navOpen]);
+
 	return (
 		<>
 			<header className="fixed h-[80px] top-0 w-full hidden md:flex justify-between items-center px-10 bg-white z-50 text-2xl">
@@ -54,7 +63,9 @@ export default function Header() {
 				</div>
 			</header>
 			<header className="fixed h-[60px] top-0 w-full flex md:hidden justify-between items-center pl-5 md:px-10 bg-white z-50 text-2xl">
-				<div className="font-bold">Jakub Olesiński</div>
+				<Link href={"/"} className="font-bold">
+					Jakub Olesiński
+				</Link>
 				<div className="scale-[0.6]">
 					<HamburgerButton active={navOpen} setActive={setNavOpen} />
 				</div>
