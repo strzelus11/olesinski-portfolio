@@ -1,4 +1,4 @@
-import { Folder } from "@/models/Folder"; // Assuming Folder model is exported from "@/models/Folder"
+import { Folder } from "../../models/Folder";
 
 export default async function handler(req, res) {
 	const { method } = req;

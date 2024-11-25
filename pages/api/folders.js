@@ -1,5 +1,5 @@
 import { mongooseConnect } from "../../lib/mongoose";
-import { Folder } from "@/models/Folder";
+import { Folder } from "../../models/Folder";
 
 export default async function handle(req, res) {
 	const { method } = req;

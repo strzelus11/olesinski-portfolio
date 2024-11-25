@@ -1,10 +1,10 @@
-import Layout from "@/components/Layout";
+import Layout from "../components/Layout";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeIn } from "@/motion";
 import { IoMail } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa6";
 import { useEffect, useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function ContactPage() {
 	const [firstName, setFirstName] = useState("");

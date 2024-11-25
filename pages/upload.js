@@ -1,10 +1,10 @@
-import Layout from "@/components/Layout";
-import Spinner from "@/components/Spinner";
+import Layout from "../components/Layout";
+import Spinner from "../components/Spinner";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import ImageInput from "@/components/ImageInput";
+import ImageInput from "../components/ImageInput";
 import toast from "react-hot-toast";
 
 export default function UploadPage() {
