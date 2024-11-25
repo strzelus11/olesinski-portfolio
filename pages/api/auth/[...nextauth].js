@@ -1,11 +1,11 @@
-import clientPromise from "@/lib/mongodb";
+import clientPromise from "../../../lib/mongodb";
 import bcrypt from "bcryptjs";
-import { User } from "@/models/User";
+import { User } from "../../../models/User";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { mongooseConnect } from "@/lib/mongoose";
+import { mongooseConnect } from "../../../lib/mongoose";
 import mongoose from "mongoose";
 
 export const authOptions = {
