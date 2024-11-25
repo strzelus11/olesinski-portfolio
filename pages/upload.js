@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ImageInput from "@/components/ImageInput";
+import toast from "react-hot-toast";
 
 export default function UploadPage() {
 	const { data: session, status } = useSession();
@@ -65,7 +66,6 @@ export default function UploadPage() {
 
 	return (
 		<Layout>
-			<h1 className="text-2xl font-bold mb-4">Upload Page</h1>
 			<form
 				onSubmit={createFolder}
 				className="mb-4 max-w-xl flex gap-2 items-center"
@@ -93,7 +93,10 @@ export default function UploadPage() {
 						<div className="flex justify-between items-center mb-2">
 							<h2 className="text-lg font-semibold">{folder.name}</h2>
 							<button
-								onClick={() => deleteFolder(folder._id)}
+								onClick={() => {
+									deleteFolder(folder._id);
+									toast.error("Folder deleted.");
+								}}
 								className="text-red-500"
 							>
 								<svg

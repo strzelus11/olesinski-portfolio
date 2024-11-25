@@ -9,14 +9,16 @@ export default function Header() {
 	const link = "transition-all delay-150 duration-500 hover:-translate-y-0.5";
 
 	const [navOpen, setNavOpen] = useState(false);
-    const session = useSession();
+	const session = useSession();
 
 	return (
 		<>
-			<header className="fixed h-[80px] top-0 w-full hidden sm:flex justify-between items-center px-10 bg-white z-50 text-2xl">
-				<div className="font-bold">Jakub Olesiński</div>
+			<header className="fixed h-[80px] top-0 w-full hidden md:flex justify-between items-center px-10 bg-white z-50 text-2xl">
+				<Link href={"/"} className="font-bold">
+					Jakub Olesiński
+				</Link>
 				<div className="flex items-center gap-7">
-					<Link href="/" className={link}>
+					<Link href="/photo" className={link}>
 						photo
 					</Link>
 					<Link href="/video" className={link}>
@@ -51,7 +53,7 @@ export default function Header() {
 					</Link>
 				</div>
 			</header>
-			<header className="fixed h-[60px] top-0 w-full flex sm:hidden justify-between items-center pl-5 sm:px-10 bg-white z-50 text-2xl">
+			<header className="fixed h-[60px] top-0 w-full flex md:hidden justify-between items-center pl-5 md:px-10 bg-white z-50 text-2xl">
 				<div className="font-bold">Jakub Olesiński</div>
 				<div className="scale-[0.6]">
 					<HamburgerButton active={navOpen} setActive={setNavOpen} />
@@ -67,10 +69,10 @@ export default function Header() {
 							duration: 0.5,
 							ease: "easeInOut",
 						}}
-						className="fixed bg-white inset-0 w-full h-full flex justify-center items-center"
+						className="fixed bg-white inset-0 w-full h-full flex justify-center items-center z-10"
 					>
 						<div className="flex flex-col justify-center items-center gap-5 scale-[2]">
-							<Link href="/" className={link}>
+							<Link href="/photo" className={link}>
 								photo
 							</Link>
 							<Link href="/video" className={link}>
@@ -82,6 +84,9 @@ export default function Header() {
 							<Link href="/contact" className={link}>
 								contact
 							</Link>
+							{session.status === "authenticated" && (
+								<button onClick={signOut}>log out</button>
+							)}
 							<div className="flex items-center gap-7 mt-7">
 								<Link
 									className={link}

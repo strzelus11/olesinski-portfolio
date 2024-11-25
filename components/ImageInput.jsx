@@ -38,12 +38,11 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 
 	return (
 		<div>
-			<label className="block mb-2">Images</label>
 			{!images?.length && (
 				<div className="text-slate-500">No images in this folder</div>
 			)}
 			<div className="my-2 flex flex-wrap gap-3">
-				<label className="w-24 h-24 cursor-pointer rounded-lg border flex flex-col items-center justify-center gap-1 text-black bg-gray-100 shadow-md">
+				<label className="size-24 cursor-pointer rounded-lg border flex flex-col items-center justify-center gap-1 text-black bg-gray-100 shadow-md">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
