@@ -6,7 +6,7 @@ export default async function handle(req, res) {
 	await mongooseConnect();
 
 	if (method === "GET") {
-		const folders = await Folder.find().sort({ name: 1 });
+		const folders = await Folder.find().sort({ order: 1 });
 		res.json(folders);
 	}
 

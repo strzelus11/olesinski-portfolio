@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import ImageInput from "../components/ImageInput";
+import { ReactSortable } from "react-sortablejs";
 import toast from "react-hot-toast";
 
 export default function UploadPage() {
@@ -60,6 +61,22 @@ export default function UploadPage() {
 		}
 	}
 
+	async function saveOrder(newOrder) {
+		setFolders(newOrder);
+		try {
+			const response = await axios.put("/api/reorder", {
+				folders: newOrder,
+			});
+
+			if (response.status === 200) {
+				// toast.success("Folders reordered successfully!");
+			}
+		} catch (error) {
+			console.error("Error reordering folders:", error);
+			toast.error("Failed to reorder folders.");
+		}
+	}
+
 	if (status === "loading") {
 		return <Spinner />;
 	}
@@ -84,7 +101,11 @@ export default function UploadPage() {
 					Add Folder
 				</button>
 			</form>
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			<ReactSortable
+				list={folders}
+				setList={saveOrder}
+				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+			>
 				{folders.map((folder) => (
 					<div
 						key={folder._id}
@@ -123,7 +144,7 @@ export default function UploadPage() {
 						/>
 					</div>
 				))}
-			</div>
+			</ReactSortable>
 		</Layout>
 	);
 }
