@@ -14,7 +14,7 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 			setLoading(true);
 
 			const newImages = [];
-			const batchSize = 5;
+			const batchSize = 4;
 			const fileArray = Array.from(files);
 
 			for (let i = 0; i < fileArray.length; i += batchSize) {
