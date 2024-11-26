@@ -78,7 +78,11 @@ export default function UploadPage() {
 	}
 
 	if (status === "loading") {
-		return <Spinner />;
+		return (
+			<div className="flex justify-center mt-10">
+				<Spinner />
+			</div>
+		);
 	}
 
 	return (

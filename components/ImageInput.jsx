@@ -12,14 +12,29 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 		const files = e.target?.files;
 		if (files?.length > 0) {
 			setLoading(true);
-			const data = new FormData();
-			for (const file of files) {
-				data.append("file", file);
+
+			const newImages = [];
+			const batchSize = 4;
+			const fileArray = Array.from(files);
+
+			for (let i = 0; i < fileArray.length; i += batchSize) {
+				const batch = fileArray.slice(i, i + batchSize);
+				const data = new FormData();
+
+				batch.forEach((file) => data.append("file", file));
+
+				try {
+					const response = await axios.post("/api/upload", data);
+					newImages.push(...response.data.links);
+				} catch (error) {
+					console.error("Error uploading batch:", error);
+					toast.error("Failed to upload some files.");
+				}
 			}
-			const response = await axios.post("/api/upload", data);
-			const newImages = [...images, ...response.data.links];
-			setImages(newImages);
-			onUpdate(newImages);
+
+			const updatedImages = [...images, ...newImages];
+			setImages(updatedImages);
+			onUpdate(updatedImages);
 			toast.success("Folder updated!");
 			setLoading(false);
 		}

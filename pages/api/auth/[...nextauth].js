@@ -9,7 +9,6 @@ import { mongooseConnect } from "../../../lib/mongoose";
 import mongoose from "mongoose";
 
 export const authOptions = {
-	debug: true,
 	secret: process.env.NEXTAUTH_URL,
 	session: {
 		strategy: "jwt",
