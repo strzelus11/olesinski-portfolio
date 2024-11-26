@@ -14,7 +14,7 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 			setLoading(true);
 
 			const newImages = [];
-			const batchSize = 4;
+			const batchSize = 5;
 			const fileArray = Array.from(files);
 
 			for (let i = 0; i < fileArray.length; i += batchSize) {
@@ -24,7 +24,9 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 				batch.forEach((file) => data.append("file", file));
 
 				try {
-					const response = await axios.post("/api/upload", data);
+					const response = await axios.post("/api/upload", data, {
+						timeout: 60000,
+					});
 					newImages.push(...response.data.links);
 				} catch (error) {
 					console.error("Error uploading batch:", error);
