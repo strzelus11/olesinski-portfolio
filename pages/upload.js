@@ -62,7 +62,7 @@ export default function UploadPage() {
 	}
 
 	async function saveOrder(newOrder) {
-		setFolders(newOrder);
+		console.log(newOrder);
 		try {
 			const response = await axios.put("/api/reorder", {
 				folders: newOrder,
@@ -103,7 +103,16 @@ export default function UploadPage() {
 			</form>
 			<ReactSortable
 				list={folders}
-				setList={saveOrder}
+				setList={setFolders}
+				onEnd={(evt) => {
+					const newOrder = [...folders];
+					const [movedItem] = newOrder.splice(evt.oldIndex, 1);
+					newOrder.splice(evt.newIndex, 0, movedItem);
+
+					setFolders(newOrder);
+					saveOrder(newOrder);
+				}}
+				animation={500}
 				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
 			>
 				{folders.map((folder) => (

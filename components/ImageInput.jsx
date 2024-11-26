@@ -74,6 +74,7 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 					className="grid grid-cols-3 sm:flex flex-wrap gap-3"
 					list={images}
 					setList={updateImagesOrder}
+					animation={500}
 				>
 					{images?.length > 0 &&
 						images.map((link, index) => (
