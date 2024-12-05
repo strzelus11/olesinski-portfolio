@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Spinner from "../components/Spinner";
+import Image from "next/image";
 
 export default function Home() {
 	const [images, setImages] = useState([]);
@@ -26,16 +27,23 @@ export default function Home() {
 					className="columns-2 sm:columns-3 gap-2 sm:gap-3"
 				>
 					{images?.map((image, index) => (
-						<div key={index} className="mb-3">
-							<motion.img
+						<motion.div
+							key={index}
+							variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
+							initial="hidden"
+							animate="show"
+							className="mb-3 relative"
+						>
+							<Image
 								src={image}
-								className="w-full h-auto object-cover"
-								loading="lazy"
-								variants={fadeIn("down", "spring", 0.03 * index, 1.5)}
-								initial="hidden"
-								animate="show"
+								alt={index}
+								width={500}
+								height={0}
+								className="rounded-md object-cover"
+								priority={index < 2}
+								unoptimized
 							/>
-						</div>
+						</motion.div>
 					))}
 				</motion.div>
 			)}

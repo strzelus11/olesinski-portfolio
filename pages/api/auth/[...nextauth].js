@@ -27,31 +27,24 @@ export const authOptions = {
 				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials, req) {
-				console.log("Starting mongoose connection...");
 				await mongooseConnect();
-				console.log("Mongoose connected");
 
 				const email = credentials?.email;
 				const password = credentials?.password;
 
-				console.log(`Finding user with email: ${email}`);
 				const user = await User.findOne({ email });
 
 				if (!user) {
-					console.log("User not found");
 					return null;
 				}
 
-				console.log("User found, validating password...");
 				if (bcrypt.compareSync(password, user.password)) {
-					console.log("Password validated, returning user");
 					return {
 						id: user._id.toString(),
 						email: user.email,
 						name: user.name,
 					};
 				} else {
-					console.log("Invalid password");
 					return null;
 				}
 			},

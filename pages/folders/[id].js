@@ -1,7 +1,7 @@
 import Layout from "../../components/Layout";
 import { mongooseConnect } from "../../lib/mongoose";
 import { Folder } from "../../models/Folder";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 
@@ -11,21 +11,21 @@ export default function FolderPage({ folder }) {
 			<h1 className="text-4xl font-bold capitalize text-center mb-7">
 				{folder.name}
 			</h1>
-			<div className="columns-2 sm:columns-3 gap-2 sm:gap-3">
+			<div className="sm:columns-1 lg:columns-3 gap-3">
 				{folder.images.map((image, index) => (
 					<motion.div
 						key={index}
 						variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 						initial="hidden"
 						animate="show"
-						className="relative w-full h-64 mb-3"
+						className="mb-3 relative"
 					>
 						<Image
 							src={image}
-							fill
-							className="rounded-lg image"
-							placeholder="blur"
-							blurDataURL="/placeholder.png"
+							alt={index}
+							width={500}
+							height={0}
+							className="rounded-md object-cover"
 							priority={index < 2}
 							unoptimized
 						/>
