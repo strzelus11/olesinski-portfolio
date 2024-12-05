@@ -1,7 +1,7 @@
 import Layout from "../../components/Layout";
 import { mongooseConnect } from "../../lib/mongoose";
 import { Folder } from "../../models/Folder";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 
