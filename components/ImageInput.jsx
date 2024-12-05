@@ -55,9 +55,6 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 
 	return (
 		<div>
-			{!images?.length && (
-				<div className="text-slate-500">No images in this folder</div>
-			)}
 			<div className="my-2 flex flex-wrap gap-3">
 				<label className="size-24 cursor-pointer rounded-lg border flex flex-col items-center justify-center gap-1 text-black bg-gray-100 shadow-md mb-1">
 					<svg
@@ -97,9 +94,9 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 						images.map((link, index) => (
 							<div
 								key={index}
-								className="h-24 bg-gray-50 flex items-center justify-center rounded-md p-1 border border-color-300 shadow-md relative group"
+								className="h-24 shadow-lg relative group"
 							>
-								<img src={link} className="sm:w-full h-full rounded" alt="" />
+								<img src={link} className="sm:w-full h-full rounded-md" alt="" />
 								<div
 									onClick={() => removeImage(link)}
 									className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
