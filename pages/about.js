@@ -1,7 +1,7 @@
 import Layout from "../components/Layout";
 import React from "react";
 import { motion } from "framer-motion";
-import { fadeIn } from "@/motion";
+import { fadeIn } from "../motion";
 
 export default function AboutPage() {
 	return (

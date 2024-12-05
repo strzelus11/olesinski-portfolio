@@ -1,9 +1,8 @@
 import Layout from "../components/Layout";
-import axios from "axios";
 import { signIn, useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { fadeIn } from "@/motion";
+import { fadeIn } from "../motion";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 

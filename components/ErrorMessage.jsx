@@ -1,4 +1,4 @@
-import { fadeIn } from "@/motion";
+import { fadeIn } from "../motion";
 import { motion } from "framer-motion";
 
 export default function ErrorMessage({ message, error }) {
