@@ -1,13 +1,28 @@
 import { mongooseConnect } from "../../lib/mongoose";
-import { Folder } from "../../models/Folder";
+import { Folder } from "models/Folder";
 
 export default async function handle(req, res) {
 	const { method } = req;
 	await mongooseConnect();
 
 	if (method === "GET") {
-		const folders = await Folder.find().sort({ order: 1 });
-		res.json(folders);
+		const { _id } = req.query;
+
+		try {
+			if (_id) {
+				const folder = await Folder.findById(_id);
+				if (!folder) {
+					return res.status(404).json({ error: "Folder not found" });
+				}
+				res.json(folder);
+			} else {
+				const folders = await Folder.find().sort({ order: 1 });
+				res.json(folders);
+			}
+		} catch (error) {
+			console.error("Error fetching folder(s):", error);
+			res.status(500).json({ error: "Internal server error" });
+		}
 	}
 
 	if (method === "POST") {
