@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Folders from "../components/Folders";
 import Videos from "../components/Videos";
+import SelectFeaturedImages from "components/Featured";
 
 export default function UploadPage() {
 	const { data: session, status } = useSession();
@@ -33,6 +34,7 @@ export default function UploadPage() {
 
 	return (
 		<Layout>
+			<SelectFeaturedImages />
 			<Folders />
 			<Videos />
 		</Layout>
