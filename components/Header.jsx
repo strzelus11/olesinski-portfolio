@@ -4,6 +4,7 @@ import { FaInstagram, FaTiktok } from "react-icons/fa";
 import HamburgerButton from "./HamburgerButton";
 import { AnimatePresence, motion } from "framer-motion";
 import { signOut, useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 export default function Header() {
 	const link = "transition-all delay-150 duration-500 hover:-translate-y-0.5";
@@ -11,19 +12,19 @@ export default function Header() {
 	const [navOpen, setNavOpen] = useState(false);
 	const session = useSession();
 
-    useEffect(() => {
-			if (navOpen) {
-				document.body.classList.add("overflow-hidden");
-			} else {
-				document.body.classList.remove("overflow-hidden");
-			}
-			return () => document.body.classList.remove("overflow-hidden");
-		}, [navOpen]);
+	useEffect(() => {
+		if (navOpen) {
+			document.body.classList.add("overflow-hidden");
+		} else {
+			document.body.classList.remove("overflow-hidden");
+		}
+		return () => document.body.classList.remove("overflow-hidden");
+	}, [navOpen]);
 
 	return (
 		<>
 			<header className="fixed h-[70px] top-0 w-full hidden md:flex justify-between items-center px-10 bg-white z-50 text-2xl">
-				<Link href={"/"} className="font-bold">
+				<Link href={"/"} className={`font-bold ${link}`}>
 					Jakub Olesiński
 				</Link>
 				<div className="flex items-center gap-7">
@@ -41,7 +42,14 @@ export default function Header() {
 					</Link>
 				</div>
 				{session.status === "authenticated" && (
-					<button onClick={signOut}>log out</button>
+					<button
+						onClick={() => {
+							signOut();
+							toast.success("You've been logged out!");
+						}}
+					>
+						log out
+					</button>
 				)}
 				<div className="flex items-center gap-7">
 					<Link

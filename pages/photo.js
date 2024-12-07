@@ -23,7 +23,7 @@ export default function PhotoPage() {
 					{folders.map((folder, index) => (
 						<motion.div
 							key={folder._id}
-							className="w-full lg:max-w-[40rem] h-[15rem] sm:h-[20rem] rounded overflow-hidden cursor-pointer relative group"
+							className="w-full aspect-[3/2] rounded overflow-hidden cursor-pointer relative group"
 							variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 							initial="hidden"
 							animate="show"

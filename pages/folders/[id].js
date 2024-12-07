@@ -53,7 +53,7 @@ export default function FolderPage({ folderId }) {
 			<h1 className="text-4xl font-bold capitalize text-center mb-7">
 				{folder.name}
 			</h1>
-			<div className="sm:columns-1 lg:columns-3 gap-3">
+			<div className="columns-1 sm:columns-2 lg:columns-3 sm:gap-3">
 				{loading ? (
 					<Spinner />
 				) : session.status === "authenticated" ? (

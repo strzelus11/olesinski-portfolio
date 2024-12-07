@@ -13,8 +13,8 @@ export default function Home() {
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(true);
 
-    const session = useSession();
-    
+	const session = useSession();
+
 	async function saveOrder(newOrder) {
 		try {
 			const response = await axios.post("/api/featured", {
@@ -49,9 +49,9 @@ export default function Home() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 1 }}
-					className="columns-2 sm:columns-3 gap-2 sm:gap-3"
+					className="columns-1 sm:columns-2 lg:columns-3 sm:gap-3"
 				>
-					{session ? (
+					{session.status === "authenticated" ? (
 						<ReactSortable
 							list={images}
 							setList={setImages}
