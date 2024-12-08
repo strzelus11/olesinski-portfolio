@@ -54,9 +54,7 @@ export default function FolderPage({ folderId }) {
 		<>
 			<AnimatePresence>
 				{fullImage !== null && (
-					<ImageBackdrop
-						handleClose={() => setFullImage(null)}
-					>
+					<ImageBackdrop handleClose={() => setFullImage(null)}>
 						<img
 							className="max-h-[90vh] w-full object-cover rounded-lg"
 							src={fullImage}
@@ -79,7 +77,6 @@ export default function FolderPage({ folderId }) {
 								const newOrder = [...images];
 								const [movedItem] = newOrder.splice(evt.oldIndex, 1);
 								newOrder.splice(evt.newIndex, 0, movedItem);
-
 								setImages(newOrder);
 								saveOrder(newOrder);
 							}}

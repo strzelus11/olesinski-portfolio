@@ -74,7 +74,10 @@ export default function Home() {
 			<AnimatePresence>
 				{fullImage !== null && (
 					<ImageBackdrop handleClose={() => setFullImage(null)}>
-                        <img className="max-h-[90vh] w-full object-cover rounded-lg" src={fullImage.url} />
+						<img
+							className="max-h-[90vh] w-full object-cover rounded-lg"
+							src={fullImage.url}
+						/>
 					</ImageBackdrop>
 				)}
 			</AnimatePresence>
@@ -147,6 +150,7 @@ export default function Home() {
 									}`}
 								>
 									<NextImage
+										onClick={() => setFullImage(image)}
 										src={image.url}
 										alt={index}
 										width={500}
