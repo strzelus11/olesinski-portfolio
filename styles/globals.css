@@ -3,14 +3,36 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: "Futura";
+	font-family: "Helvetica";
 	src: url("/fonts/Helvetica.otf") format("truetype");
 	font-weight: thin;
 	font-style: normal;
 }
 
+@font-face {
+	font-family: "Helvetica-Bold";
+	src: url("/fonts/HelveticaBold.otf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: "Helvetica-Medium";
+	src: url("/fonts/HelveticaMedium.otf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+}
+
 body {
-	font-family: "Futura", Arial, sans-serif;
+	font-family: "Helvetica", Arial, sans-serif;
+}
+
+.bold {
+	font-family: "Helvetica-Bold", Arial, sans-serif;
+}
+
+.medium {
+	font-family: "Helvetica-Medium", Arial, sans-serif;
 }
 
 input,

@@ -24,7 +24,7 @@ export default function Header() {
 	return (
 		<>
 			<header className="fixed h-[70px] top-0 w-full hidden md:flex justify-between items-center px-10 bg-white z-50 text-2xl">
-				<Link href={"/"} className={`font-bold ${link}`}>
+				<Link href={"/"} className={`bold ${link}`}>
 					Jakub Olesiński
 				</Link>
 				<div className="flex items-center gap-7">

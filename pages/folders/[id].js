@@ -50,7 +50,7 @@ export default function FolderPage({ folderId }) {
 
 	return (
 		<Layout>
-			<h1 className="text-4xl font-bold capitalize text-center mb-7">
+			<h1 className="text-4xl medium capitalize text-center mb-7">
 				{folder.name}
 			</h1>
 			<div className="sm:columns-1 lg:columns-3 gap-3">
@@ -76,7 +76,7 @@ export default function FolderPage({ folderId }) {
 								variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 								initial="hidden"
 								animate="show"
-								className="mb-3 relative cursor-grab"
+								className="mb-2 sm:mb-3 relative cursor-grab"
 							>
 								<img
 									src={image}
@@ -93,7 +93,7 @@ export default function FolderPage({ folderId }) {
 							variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 							initial="hidden"
 							animate="show"
-							className="mb-3 relative"
+							className="mb-2 sm:mb-3 relative"
 						>
 							<Image
 								src={image}
