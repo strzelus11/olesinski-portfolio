@@ -7,7 +7,7 @@ export default function ImageBackdrop({ children, handleClose }) {
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			onClick={handleClose}
-			className="fixed inset-0 bg-black/60 flex items-center justify-center p-10 z-[100]"
+			className="fixed inset-0 bg-black/60 flex items-center justify-center p-5 z-[100]"
 		>
 			<motion.div
 				initial={{ opacity: 0, scale: 0, rotate: -20 }}
