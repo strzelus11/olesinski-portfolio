@@ -11,9 +11,9 @@ export default function SelectFeaturedImages() {
 
 	function handleSelectImage(image) {
 		setSelectedImages((prev) =>
-			prev.includes(image)
-				? prev.filter((img) => img !== image)
-				: [...prev, image]
+			prev.some((img) => img.url === image)
+				? prev.filter((img) => img.url !== image)
+				: [...prev, { url: image }]
 		);
 	}
 
@@ -45,11 +45,13 @@ export default function SelectFeaturedImages() {
 				{loading ? (
 					<Spinner />
 				) : (
-					images.map((image) => (
+					images?.map((image) => (
 						<div
-							key={image}
+							key={image.url}
 							className={`relative h-24 border-2 rounded-lg transition-all delay-100 duration-300 ${
-								selectedImages.includes(image)
+								selectedImages.some(
+									(selectedImage) => selectedImage.url === image
+								)
 									? "border-green-500"
 									: "border-transparent"
 							}`}
@@ -58,7 +60,11 @@ export default function SelectFeaturedImages() {
 							<img src={image} className="sm:w-full h-full rounded-md" alt="" />
 							<div
 								className={`${
-									selectedImages.includes(image) ? "opacity-100" : "opacity-0 "
+									selectedImages.some(
+										(selectedImage) => selectedImage.url === image
+									)
+										? "opacity-100"
+										: "opacity-0 "
 								} transition-all delay-100 duration-300 absolute -top-2 -left-2 bg-gray-50 border-2 border-green-500 rounded-full p-1 size-6 flex items-center justify-center text-green-500 cursor-pointer`}
 							>
 								<svg

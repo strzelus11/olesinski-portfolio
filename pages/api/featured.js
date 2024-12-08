@@ -3,7 +3,6 @@ import { Featured } from "../../models/Featured";
 
 export default async function handle(req, res) {
 	const { method } = req;
-
 	await mongooseConnect();
 
 	if (method === "GET") {
@@ -31,6 +30,4 @@ export default async function handle(req, res) {
 				.json({ error: "Failed to update featured images." });
 		}
 	}
-
-	res.status(405).json({ error: "Method not allowed." });
 }

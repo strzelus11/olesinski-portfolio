@@ -18,7 +18,7 @@ export default function PhotoPage() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 1 }}
-					className="w-full flex flex-col gap-5 lg:grid grid-cols-2"
+					className="w-full flex flex-col gap-2 sm:gap-5 lg:grid grid-cols-2"
 				>
 					{folders.map((folder, index) => (
 						<motion.div

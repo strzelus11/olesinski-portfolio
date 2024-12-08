@@ -4,21 +4,23 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Spinner from "../components/Spinner";
-import Image from "next/image";
+import NextImage from "next/image";
 import { useSession } from "next-auth/react";
 import { ReactSortable } from "react-sortablejs";
 import toast from "react-hot-toast";
+import useIsMobile from "lib/useIsMobile";
 
 export default function Home() {
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(true);
 
 	const session = useSession();
+	const isMobile = useIsMobile();
 
 	async function saveOrder(newOrder) {
 		try {
 			const response = await axios.post("/api/featured", {
-				images: newOrder, // Send the reordered list
+				images: newOrder,
 			});
 
 			if (response.status === 200) {
@@ -36,9 +38,36 @@ export default function Home() {
 		setLoading(true);
 		axios
 			.get("/api/featured")
-			.then((response) => setImages(response.data.images))
+			.then((response) => {
+				const fetchDimensions = async (images) => {
+					const results = await Promise.all(
+						images.map((image) => {
+							return new Promise((resolve) => {
+								const img = new Image();
+								img.src = image.url;
+								img.onload = () => {
+									resolve({
+										url: image.url,
+										width: img.naturalWidth,
+										height: img.naturalHeight,
+										orientation:
+											img.naturalWidth > img.naturalHeight
+												? "horizontal"
+												: "vertical",
+									});
+								};
+							});
+						})
+					);
+					setImages(results);
+				};
+
+				fetchDimensions(response.data.images || []);
+			})
 			.finally(() => setLoading(false));
 	}, []);
+
+	console.log(images);
 
 	return (
 		<Layout>
@@ -49,10 +78,21 @@ export default function Home() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 1 }}
-					className="columns-1 sm:columns-2 lg:columns-3 sm:gap-3"
+					className={
+						session.status !== "authenticated"
+							? isMobile
+								? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+								: "md:columns-2 lg:columns-3"
+							: ""
+					}
 				>
 					{session.status === "authenticated" ? (
 						<ReactSortable
+							className={
+								isMobile
+									? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+									: "md:columns-2 lg:columns-3"
+							}
 							list={images}
 							setList={setImages}
 							onEnd={(evt) => {
@@ -70,11 +110,15 @@ export default function Home() {
 									variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 									initial="hidden"
 									animate="show"
-									className="mb-3 relative cursor-grab"
+									className={`mb-2 sm:mb-3 relative w-full ${
+										image.orientation === "horizontal"
+											? "col-span-2"
+											: "col-span-1"
+									}`}
 								>
 									<img
-										src={image}
-										className="sm:w-full h-full rounded-md"
+										src={image.url}
+										className="w-full h-auto rounded-md cursor-grab"
 										alt=""
 									/>
 								</motion.div>
@@ -87,10 +131,14 @@ export default function Home() {
 								variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 								initial="hidden"
 								animate="show"
-								className="mb-3 relative"
+								className={`mb-2 sm:mb-3 relative ${
+									image.orientation === "horizontal"
+										? "col-span-2"
+										: "col-span-1"
+								}`}
 							>
-								<Image
-									src={image}
+								<NextImage
+									src={image.url}
 									alt={index}
 									width={500}
 									height={0}

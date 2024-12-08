@@ -1,6 +1,6 @@
 import Layout from "../../components/Layout";
 import axios from "axios";
-import Image from "next/image";
+import NextImage from "next/image";
 import { motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 import { ReactSortable } from "react-sortablejs";
@@ -8,27 +8,56 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Spinner from "components/Spinner";
+import useIsMobile from "lib/useIsMobile";
 
 export default function FolderPage({ folderId }) {
 	const [images, setImages] = useState([]);
-	const [folder, setFolder] = useState({});
 	const [loading, setLoading] = useState(true);
+	const [folder, setFolder] = useState({});
 
 	const session = useSession();
+	const isMobile = useIsMobile();
 
 	useEffect(() => {
 		setLoading(true);
-		try {
-			axios.get(`/api/folders/?_id=${folderId}`).then((response) => {
-				setImages(response.data?.images || []);
-				setFolder(response.data);
-			});
-		} catch (error) {
-			console.error("Error fetching folder data:", error);
-			toast.error("Failed to load folder data.");
-		} finally {
-			setLoading(false);
-		}
+		const fetchFolderAndDimensions = async () => {
+			try {
+				const response = await axios.get(`/api/folders/?_id=${folderId}`);
+				const folderData = response.data;
+                setFolder(folderData);
+
+				if (folderData?.images?.length) {
+					const results = await Promise.all(
+                        folderData.images.map((image) => {
+							return new Promise((resolve) => {
+								const img = new Image();
+								img.src = image.url;
+								img.onload = () => {
+									resolve({
+										url: image.url,
+										width: img.naturalWidth,
+										height: img.naturalHeight,
+										orientation:
+											img.naturalWidth > img.naturalHeight
+												? "horizontal"
+												: "vertical",
+									});
+								};
+							});
+						})
+                    );
+
+					setImages(results);
+				}
+			} catch (error) {
+				console.error("Error fetching folder data:", error);
+				toast.error("Failed to load folder data.");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchFolderAndDimensions();
 	}, [folderId]);
 
 	async function saveOrder(newOrder) {
@@ -50,14 +79,21 @@ export default function FolderPage({ folderId }) {
 
 	return (
 		<Layout>
-			<h1 className="text-4xl font-bold capitalize text-center mb-7">
+			<h1 className="text-3xl md:text-4xl font-bold capitalize text-center mb-5 sm:mb-7">
 				{folder.name}
 			</h1>
-			<div className="sm:columns-1 lg:columns-3 gap-3">
+			<div
+				className={
+					session.status !== "authenticated" && isMobile
+						? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+						: ""
+				}
+			>
 				{loading ? (
 					<Spinner />
 				) : session.status === "authenticated" ? (
 					<ReactSortable
+						className="grid grid-cols-2 gap-x-2 sm:gap-x-3"
 						list={images}
 						setList={setImages}
 						onEnd={(evt) => {
@@ -76,10 +112,14 @@ export default function FolderPage({ folderId }) {
 								variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 								initial="hidden"
 								animate="show"
-								className="mb-3 relative cursor-grab"
+								className={`mb-2 sm:mb-3 relative w-full ${
+									image.orientation === "horizontal"
+										? "col-span-2"
+										: "col-span-1"
+								}`}
 							>
 								<img
-									src={image}
+									src={image.url}
 									className="sm:w-full h-full rounded-md"
 									alt=""
 								/>
@@ -93,10 +133,12 @@ export default function FolderPage({ folderId }) {
 							variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
 							initial="hidden"
 							animate="show"
-							className="mb-3 relative"
+							className={`mb-2 sm:mb-3 relative w-full ${
+								image.orientation === "horizontal" ? "col-span-2" : "col-span-1"
+							}`}
 						>
-							<Image
-								src={image}
+							<NextImage
+								src={image.url}
 								alt={`Image ${index + 1}`}
 								width={500}
 								height={0}
