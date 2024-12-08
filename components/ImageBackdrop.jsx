@@ -1,20 +1,20 @@
 import { backInOut, motion } from "framer-motion";
 
-export default function Backdrop({ children, handleClose }) {
+export default function ImageBackdrop({ children, handleClose }) {
 	return (
 		<motion.div
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			onClick={handleClose}
-			className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100]"
+			className="fixed inset-0 bg-black/60 flex items-center justify-center p-10 z-[100]"
 		>
 			<motion.div
 				initial={{ opacity: 0, scale: 0, rotate: -20 }}
 				animate={{ opacity: 1, scale: 1, rotate: 0 }}
 				exit={{ opacity: 0, scale: 0, rotate: 20 }}
 				transition={{ ease: backInOut, duration: 0.5 }}
-				className="bg-white p-2 sm:p-5 rounded-md relative w-[90vw] sm:w-[80vw]"
+				className="bg-white p-2 sm:p-5 rounded-md relative aspect-auto flex items-center justify-center"
 				onClick={(e) => e.stopPropagation()}
 			>
 				<button

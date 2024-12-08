@@ -92,11 +92,12 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 				>
 					{images?.length > 0 &&
 						images.map((link, index) => (
-							<div
-								key={index}
-								className="h-24 shadow-lg relative group"
-							>
-								<img src={link} className="sm:w-full h-full rounded-md" alt="" />
+							<div key={index} className="h-24 shadow-lg relative group">
+								<img
+									src={link}
+									className="sm:w-full h-full rounded-md"
+									alt=""
+								/>
 								<div
 									onClick={() => removeImage(link)}
 									className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
