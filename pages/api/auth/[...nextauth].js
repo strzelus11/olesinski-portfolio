@@ -1,10 +1,10 @@
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "lib/mongodb";
 import bcrypt from "bcryptjs";
 import { User } from "../../../models/User";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import { mongooseConnect } from "../../../lib/mongoose";
+import { mongooseConnect } from "lib/mongoose";
 
 export const authOptions = {
 	secret: process.env.NEXTAUTH_URL,
