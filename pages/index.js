@@ -10,6 +10,7 @@ import { ReactSortable } from "react-sortablejs";
 import toast from "react-hot-toast";
 import useIsMobile from "lib/useIsMobile";
 import ImageBackdrop from "components/ImageBackdrop";
+import Head from "next/head";
 
 export default function Home() {
 	const [images, setImages] = useState([]);
@@ -71,6 +72,10 @@ export default function Home() {
 
 	return (
 		<>
+			<Head>
+				<title>olesinskiego | home</title>
+				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+			</Head>
 			<AnimatePresence>
 				{fullImage !== null && (
 					<ImageBackdrop handleClose={() => setFullImage(null)}>

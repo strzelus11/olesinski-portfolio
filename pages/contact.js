@@ -5,6 +5,7 @@ import { IoMail } from "react-icons/io5";
 import { FaPhone } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
+import Head from "next/head";
 
 export default function ContactPage() {
 	const [firstName, setFirstName] = useState("");
@@ -68,6 +69,10 @@ export default function ContactPage() {
 	}
 	return (
 		<Layout>
+			<Head>
+				<title>olesinskiego | contact</title>
+				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+			</Head>
 			<div className="flex flex-col sm:grid grid-cols-3 gap-5">
 				<motion.div
 					variants={fadeIn("right", "spring", 0.3, 1)}
@@ -75,7 +80,7 @@ export default function ContactPage() {
 					whileInView="show"
 					className="col-span-1"
 				>
-					<img src="/images/1.png" alt="" />
+					<img src="/images/contact.png" alt="" />
 				</motion.div>
 				<motion.div
 					variants={fadeIn("left", "spring", 0.5, 1)}
@@ -132,7 +137,9 @@ export default function ContactPage() {
 								onChange={(e) => setMessage(e.target.value)}
 								className="min-h-[10rem]"
 							></textarea>
-							<button className="mt-3" type="submit">Submit</button>
+							<button className="mt-3" type="submit">
+								Submit
+							</button>
 						</form>
 					</div>
 					<motion.div

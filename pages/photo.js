@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Link from "next/link";
+import Head from "next/head";
 
 export default function PhotoPage() {
 	const [folders, setFolders] = useState([]);
@@ -13,6 +14,10 @@ export default function PhotoPage() {
 	}, []);
 	return (
 		<Layout>
+			<Head>
+				<title>olesinskiego | photo</title>
+				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+			</Head>
 			<motion.div className="flex justify-center">
 				<div
 					initial={{ opacity: 0 }}

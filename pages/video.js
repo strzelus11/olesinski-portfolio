@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { fadeIn } from "../motion";
+import Head from "next/head";
 
 export default function VideoPage() {
 	const [videos, setVideos] = useState([]);
@@ -38,6 +39,10 @@ export default function VideoPage() {
 				)
 			}
 		>
+			<Head>
+				<title>olesinskiego | video</title>
+				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+			</Head>
 			<motion.div className="flex justify-center">
 				<div
 					initial={{ opacity: 0 }}
