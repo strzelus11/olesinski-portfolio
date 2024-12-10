@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ImageInput from "./ImageInput";
+import ThumbnailInput from "./ThumbnailInput";
 
 export default function Videos() {
 	const [videos, setVideos] = useState([]);
@@ -95,23 +95,17 @@ export default function Videos() {
 								</svg>
 							</button>
 						</div>
-						{!video.thumbnail ? (
-							<>
-								<p className="text-sm text-gray-600 mb-2">
-									{!video.thumbnail && "No thumbnail yet"}
-								</p>
-								<ImageInput
-									images={video.thumbnail ? [video.thumbnail] : []}
-									onUpdate={(updatedImages) => {
-										if (updatedImages.length > 0) {
-											updateThumbnail(video._id, updatedImages[0]);
-										}
-									}}
-								/>
-							</>
-						) : (
-							<img className="aspect-video rounded-md" src={video.thumbnail} />
-						)}
+						<p className="text-sm text-gray-600 mb-2">
+							{!video.thumbnail && "No thumbnail yet"}
+						</p>
+						<ThumbnailInput
+							initialImage={video.thumbnail}
+							onUpdate={(updatedImages) => {
+								if (updatedImages.length > 0) {
+									updateThumbnail(video._id, updatedImages[0]);
+								}
+							}}
+						/>
 					</div>
 				))}
 			</div>

@@ -19,11 +19,18 @@ export default function AboutPage() {
 					variants={fadeIn("left", "spring", 0.5, 1)}
 					initial="hidden"
 					whileInView="show"
-                    className="col-span-2 p-3 max-w-xl"
+					className="col-span-2 p-3 max-w-xl"
 				>
 					<h1 className="text-3xl font-semibold mb-5">About me</h1>
 					<p>
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, quibusdam sed et, explicabo, deleniti inventore sunt aperiam fugiat ipsa illo distinctio laborum adipisci similique quasi rerum magnam accusamus amet. Praesentium, quod laboriosam. Animi corporis tenetur molestiae adipisci, consectetur excepturi repudiandae, exercitationem accusantium ea sed distinctio inventore? Saepe dolores sed, quos officiis corrupti voluptas sunt. Reiciendis veritatis error alias aut ut aliquid nemo, expedita illo facilis dignissimos aperiam commodi sit a quos dolor consequatur explicabo est? Quibusdam eligendi nihil doloribus, eveniet hic odit facere numquam delectus magni quae sapiente dicta ullam rerum velit facilis repellendus amet, accusantium debitis saepe provident illo.
+						Hej, Jestem Kuba i witam Ciebie na stronie poświęconej mojej
+						fotograficznej twórczości fotografią zajmuje się parę lat, od 3
+						większość czasu poświęcam fotografii modowej / produktowej dzięki
+						pasji do podróży, również zdarza mi się robić fotki bardziej
+						związane z architekturą/ krajobrazami i wszystkim co związane z
+						podróżami od niedawna zacząłem zbierać najlepsze złapane ujęcia w
+						jednym miejscu, czego efektem jest właśnie ta strona zapraszam do
+						kontaktu, stwórzmy coś razem
 					</p>
 				</motion.div>
 			</div>

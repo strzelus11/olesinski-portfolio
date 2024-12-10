@@ -43,7 +43,7 @@ export default function Home() {
 			.then((response) => {
 				const fetchDimensions = async (images) => {
 					const results = await Promise.all(
-						images.map((image) => {
+                        images.map((image) => {
 							return new Promise((resolve) => {
 								const img = new Image();
 								img.src = image.url;

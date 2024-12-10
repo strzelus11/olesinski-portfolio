@@ -63,7 +63,7 @@ export default function FolderPage({ folderId }) {
 				)}
 			</AnimatePresence>
 			<Layout>
-				<h1 className="text-4xl medium capitalize text-center mb-7">
+				<h1 className="text-3xl sm:text-4xl medium capitalize text-center mb-5 sm:mb-7">
 					{folder.name}
 				</h1>
 				<div className="sm:columns-1 lg:columns-3 gap-3">
@@ -93,7 +93,7 @@ export default function FolderPage({ folderId }) {
 									<img
 										onClick={() => setFullImage(image)}
 										src={image}
-										className="sm:w-full h-full rounded-md"
+										className="w-full h-auto rounded-md"
 										alt=""
 									/>
 								</motion.div>
