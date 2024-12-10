@@ -45,9 +45,9 @@ export default function SelectFeaturedImages() {
 				{loading ? (
 					<Spinner />
 				) : (
-					images?.map((image) => (
+					images?.map((image, index) => (
 						<div
-							key={image.url}
+							key={index}
 							className={`relative h-24 border-2 rounded-lg transition-all delay-100 duration-300 ${
 								selectedImages.some(
 									(selectedImage) => selectedImage.url === image

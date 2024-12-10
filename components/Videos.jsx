@@ -36,7 +36,7 @@ export default function Videos() {
 
 	async function updateThumbnail(videoId, thumbnail) {
 		try {
-			const updatedVideo = { _id: videoId, thumbnail };
+			const updatedVideo = { _id: videoId, thumbnail: thumbnail || "" };
 			await axios.put("/api/videos", updatedVideo);
 
 			setVideos(
@@ -100,9 +100,11 @@ export default function Videos() {
 						</p>
 						<ThumbnailInput
 							initialImage={video.thumbnail}
-							onUpdate={(updatedImages) => {
-								if (updatedImages.length > 0) {
-									updateThumbnail(video._id, updatedImages[0]);
+							onUpdate={(updatedImage) => {
+								if (updatedImage) {
+									updateThumbnail(video._id, updatedImage);
+								} else {
+									updateThumbnail(video._id, null);
 								}
 							}}
 						/>
