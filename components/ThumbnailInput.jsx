@@ -14,7 +14,6 @@ export default function ThumbnailInput({ initialImage, onUpdate }) {
 
 			const data = new FormData();
 			data.set("file", files[0]);
-			console.log(data);
 
 			try {
 				const response = await axios.post("/api/upload", data, {

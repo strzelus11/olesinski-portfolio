@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ThumbnailInput from "./ThumbnailInput";
+import toast from "react-hot-toast";
 
 export default function Videos() {
 	const [videos, setVideos] = useState([]);
 	const [newVideoLink, setNewVideoLink] = useState("");
-	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		axios.get("/api/videos").then((response) => setVideos(response.data));
@@ -14,18 +14,18 @@ export default function Videos() {
 	async function addVideo(e) {
 		e.preventDefault();
 		if (!newVideoLink.trim()) {
-			setError("Video link cannot be empty.");
+			toast.error("Video link cannot be empty.");
 			return;
 		}
-		setError(null);
 
 		try {
 			const response = await axios.post("/api/videos", { link: newVideoLink });
 			setVideos([...videos, response.data]);
+			toast.success("Video added!");
 			setNewVideoLink("");
 		} catch (err) {
+			toast.error("Error adding video.");
 			console.error("Error adding video:", err);
-			setError("Failed to add video. Please try again.");
 		}
 	}
 
@@ -68,7 +68,6 @@ export default function Videos() {
 					Add Video
 				</button>
 			</form>
-			{error && <p className="text-red-500">{error}</p>}
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 				{videos.map((video) => (

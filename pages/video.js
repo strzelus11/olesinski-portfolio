@@ -19,8 +19,6 @@ export default function VideoPage() {
 		axios.get("/api/videos").then((response) => setVideos(response.data));
 	}, []);
 
-	console.log(videos);
-
 	return (
 		<Layout
 			handleClose={() => {
