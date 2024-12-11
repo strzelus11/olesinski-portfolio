@@ -71,7 +71,7 @@ export default function ContactPage() {
 		<Layout>
 			<Head>
 				<title>olesinskiego | contact</title>
-				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+				<link rel="shortcut icon" href="/images/icon.png" type="image/x-icon" />
 				<meta
 					name="description"
 					content="Owner of a fashion brand with extensive knowledge of image and style. Successfully completed numerous projects combining creativity with commercial success.
