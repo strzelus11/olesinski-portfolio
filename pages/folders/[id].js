@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Spinner from "components/Spinner";
 import ImageBackdrop from "components/ImageBackdrop";
+import Head from "next/head";
 
 export default function FolderPage({ folderId }) {
 	const [images, setImages] = useState([]);
