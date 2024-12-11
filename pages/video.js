@@ -42,6 +42,11 @@ export default function VideoPage() {
 			<Head>
 				<title>olesinskiego | video</title>
 				<link rel="shortcut icon" href="/icon.png" type="image/x-icon" />
+				<meta
+					name="description"
+					content="Owner of a fashion brand with extensive knowledge of image and style. Successfully completed numerous projects combining creativity with commercial success.
+Creates advertising materials, individual photo sessions, social media content, and much more in a unique style."
+				/>
 			</Head>
 			<motion.div className="flex justify-center">
 				<div
