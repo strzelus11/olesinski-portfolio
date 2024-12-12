@@ -85,7 +85,7 @@ Creates advertising materials, individual photo sessions, social media content, 
 					whileInView="show"
 					className="col-span-1"
 				>
-					<img src="/images/contact.png" alt="" />
+					<img className="rounded-md" src="/images/contact.png" alt="" />
 				</motion.div>
 				<motion.div
 					variants={fadeIn("left", "spring", 0.5, 1)}

@@ -17,8 +17,13 @@ export default function Layout({ children, modal, handleClose }) {
 			<AnimatePresence>
 				{modal && <Backdrop handleClose={handleClose}>{modal}</Backdrop>}
 			</AnimatePresence>
-			<div className="min-h-screen container mx-auto p-2 sm:p-5 pt-[68px] sm:pt-[100px]">
-				{children}
+			<div className="min-h-screen flex flex-col">
+				<div className="flex-grow container mx-auto p-2 sm:p-5 pt-[68px] sm:pt-[100px]">
+					{children}
+				</div>
+				<div className="flex flex-col gap-2 justify-center items-center py-5 text-gray-500 medium">
+					Designed and developed by Jakub Strzelecki &copy;
+				</div>
 			</div>
 		</ReactLenis>
 	);
