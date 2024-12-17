@@ -6,6 +6,7 @@ import { FaPhone } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
 import Head from "next/head";
+import toast from "react-hot-toast";
 
 export default function ContactPage() {
 	const [firstName, setFirstName] = useState("");
@@ -28,7 +29,8 @@ export default function ContactPage() {
 		}
 	}, [email]);
 
-	async function sendEmail() {
+	async function sendEmail(e) {
+		e.preventDefault();
 		if (email !== "" && message !== "" && !emailError) {
 			setLoading(true);
 			const emailPromise = fetch("/api/send", {
@@ -56,15 +58,15 @@ export default function ContactPage() {
 
 			await toast
 				.promise(emailPromise, {
-					loading: "Wysyłanie...",
-					success: "Email wysłany pomyślnie!",
-					error: "Błąd przy wysyłaniu emaila",
+					loading: "Sending...",
+					success: "Email sent successfully!",
+					error: "Error while sending an email.",
 				})
 				.finally(() => {
 					setLoading(false);
 				});
 		} else {
-			toast.error("Uzupełnij wszystkie pola.");
+			toast.error("Fill all required fields.");
 		}
 	}
 	return (
