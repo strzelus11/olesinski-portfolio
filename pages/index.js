@@ -39,35 +39,15 @@ export default function Home() {
 
 	useEffect(() => {
 		setLoading(true);
-		axios
-			.get("/api/featured")
-			.then((response) => {
-				const fetchDimensions = async (images) => {
-					const results = await Promise.all(
-						images.map((image) => {
-							return new Promise((resolve) => {
-								const img = new Image();
-								img.src = image.url;
-								img.onload = () => {
-									resolve({
-										url: image.url,
-										width: img.naturalWidth,
-										height: img.naturalHeight,
-										orientation:
-											img.naturalWidth > img.naturalHeight
-												? "horizontal"
-												: "vertical",
-									});
-								};
-							});
-						})
-					);
-					setImages(results);
-				};
-
-				fetchDimensions(response.data.images || []);
-			})
-			.finally(() => setLoading(false));
+		try {
+			axios
+				.get("/api/featured")
+				.then((response) => setImages(response.data.images));
+		} catch (error) {
+			console.error("Failed to fetch images:", error);
+		} finally {
+			setLoading(false);
+		}
 	}, []);
 
 	return (
