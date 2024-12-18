@@ -113,9 +113,12 @@ Creates advertising materials, individual photo sessions, social media content, 
 						images.map((image, index) => (
 							<motion.div
 								key={index}
-								variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
-								initial="hidden"
-								animate="show"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 100 }}
+								transition={{
+									duration: 0.5,
+									ease: "easeInOut",
+								}}
 								className="mb-2 sm:mb-3 relative"
 							>
 								<Image
@@ -126,8 +129,6 @@ Creates advertising materials, individual photo sessions, social media content, 
 									height={0}
 									className="rounded-md object-cover"
 									loading="lazy"
-									placeholder="blur"
-									blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
 								/>
 							</motion.div>
 						))
