@@ -31,8 +31,6 @@ Creates advertising materials, individual photo sessions, social media content, 
 						height={0}
 						className="rounded-md object-cover"
 						loading="lazy"
-						placeholder="blur"
-						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
 					/>
 				</motion.div>
 				<motion.div

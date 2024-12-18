@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Link from "next/link";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function PhotoPage() {
 	const [folders, setFolders] = useState([]);
@@ -45,10 +46,13 @@ Creates advertising materials, individual photo sessions, social media content, 
 								duration: 0.5,
 							}}
 						>
-							<img
-								className="w-full h-full object-cover"
+							<Image
 								src={folder.images[0]}
-								alt=""
+								alt="folder-image"
+								width={500}
+								height={0}
+								className="rounded-md object-cover w-full h-full"
+								loading="lazy"
 							/>
 							<div className="absolute inset-0 bg-black/60 sm:opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
 								<Link

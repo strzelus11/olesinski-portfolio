@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import { fadeIn } from "../motion";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function VideoPage() {
 	const [videos, setVideos] = useState([]);
@@ -70,9 +71,13 @@ Creates advertising materials, individual photo sessions, social media content, 
 								duration: 0.5,
 							}}
 						>
-							<img
-								className="w-full h-full object-cover"
+							<Image
 								src={video.thumbnail}
+								alt="about"
+								width={500}
+								height={0}
+								className="rounded-md object-cover w-full h-full"
+								loading="lazy"
 							/>
 							<div className="absolute inset-0 bg-black/60 sm:opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
 								<button
