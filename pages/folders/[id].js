@@ -125,8 +125,9 @@ Creates advertising materials, individual photo sessions, social media content, 
 									width={500}
 									height={0}
 									className="rounded-md object-cover"
-									priority={index < 2}
-									unoptimized
+									loading="lazy"
+									placeholder="blur"
+									blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
 								/>
 							</motion.div>
 						))

@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Head from "next/head";
+import Image from "next/image";
 
 export default function AboutPage() {
 	return (
@@ -23,7 +24,16 @@ Creates advertising materials, individual photo sessions, social media content, 
 					whileInView="show"
 					className="col-span-1"
 				>
-					<img className="rounded-md" src="/images/about.png" alt="" />
+					<Image
+						src="/images/about.png"
+						alt="about"
+						width={500}
+						height={0}
+						className="rounded-md object-cover"
+						loading="lazy"
+						placeholder="blur"
+						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
+					/>
 				</motion.div>
 				<motion.div
 					variants={fadeIn("left", "spring", 0.5, 1)}

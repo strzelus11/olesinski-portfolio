@@ -44,7 +44,7 @@ export default function Home() {
 			.then((response) => {
 				const fetchDimensions = async (images) => {
 					const results = await Promise.all(
-                        images.map((image) => {
+						images.map((image) => {
 							return new Promise((resolve) => {
 								const img = new Image();
 								img.src = image.url;
@@ -166,8 +166,9 @@ Creates advertising materials, individual photo sessions, social media content, 
 										width={500}
 										height={0}
 										className="rounded-md object-cover"
-										priority={index < 2}
-										unoptimized
+										loading="lazy"
+										placeholder="blur"
+										blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
 									/>
 								</motion.div>
 							))

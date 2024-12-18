@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
 import Head from "next/head";
 import toast from "react-hot-toast";
+import Image from "next/image";
 
 export default function ContactPage() {
 	const [firstName, setFirstName] = useState("");
@@ -64,6 +65,10 @@ export default function ContactPage() {
 				})
 				.finally(() => {
 					setLoading(false);
+					setEmail("");
+					setFirstName("");
+					setLastName("");
+					setMessage("");
 				});
 		} else {
 			toast.error("Fill all required fields.");
@@ -87,7 +92,16 @@ Creates advertising materials, individual photo sessions, social media content, 
 					whileInView="show"
 					className="col-span-1"
 				>
-					<img className="rounded-md" src="/images/contact.png" alt="" />
+					<Image
+						src="/images/contact.png"
+						alt="contact"
+						width={500}
+						height={0}
+						className="rounded-md object-cover"
+						loading="lazy"
+						placeholder="blur"
+						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/wcAAgEBBAEPdwIAAAAASUVORK5CYII="
+					/>
 				</motion.div>
 				<motion.div
 					variants={fadeIn("left", "spring", 0.5, 1)}
