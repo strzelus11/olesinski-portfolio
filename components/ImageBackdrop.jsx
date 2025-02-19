@@ -15,7 +15,7 @@ export default function ImageBackdrop({ children, handleClose }) {
 				exit={{ opacity: 0, scale: 0, rotate: 20 }}
 				transition={{ ease: backInOut, duration: 0.5 }}
 				className="bg-white p-2 sm:p-5 rounded-md relative aspect-auto flex items-center justify-center"
-				onClick={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
 			>
 				<button
 					onClick={handleClose}
