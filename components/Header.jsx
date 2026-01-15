@@ -42,14 +42,19 @@ export default function Header() {
 					</Link>
 				</div>
 				{session.status === "authenticated" && (
-					<button
-						onClick={() => {
-							signOut();
-							toast.success("You've been logged out!");
-						}}
-					>
-						log out
-					</button>
+					<div className="flex justify-center items-center gap-3">
+						<button
+							onClick={() => {
+								signOut();
+								toast.success("You've been logged out!");
+							}}
+						>
+							log out
+						</button>
+						<Link href="/upload" className={link}>
+							upload
+						</Link>
+					</div>
 				)}
 				<div className="flex items-center gap-7">
 					<Link
@@ -104,7 +109,19 @@ export default function Header() {
 								contact
 							</Link>
 							{session.status === "authenticated" && (
-								<button onClick={signOut}>log out</button>
+								<div className="flex flex-col justify-center items-center gap-5">
+									<button
+										onClick={() => {
+											signOut();
+											toast.success("You've been logged out!");
+										}}
+									>
+										log out
+									</button>
+									<Link href="/upload" className={link}>
+										upload
+									</Link>
+								</div>
 							)}
 							<div className="flex items-center gap-7 mt-7">
 								<Link

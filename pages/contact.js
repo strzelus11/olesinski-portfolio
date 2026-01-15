@@ -90,10 +90,10 @@ Creates advertising materials, individual photo sessions, social media content, 
 					variants={fadeIn("right", "spring", 0.3, 1)}
 					initial="hidden"
 					whileInView="show"
-					className="col-span-1"
+					className="col-span-1 sm:pt-[58px]"
 				>
 					<Image
-						src="/images/contact.png"
+						src="/images/contact.webp"
 						alt="contact"
 						width={500}
 						height={0}
@@ -105,13 +105,13 @@ Creates advertising materials, individual photo sessions, social media content, 
 					variants={fadeIn("left", "spring", 0.5, 1)}
 					initial="hidden"
 					whileInView="show"
-					className="col-span-2 p-3 flex flex-col justify-between"
+					className="col-span-2 px-3 flex flex-col justify-between"
 				>
 					<div>
 						<h1 className="text-3xl font-semibold mb-5">Contact me</h1>
 						<form
 							onSubmit={sendEmail}
-							className="flex flex-col sm:items-start gap-2 max-w-xl"
+							className="flex flex-col sm:items-start gap-2 max-w-3xl"
 						>
 							<label>Name:</label>
 							<div className="w-full flex gap-2 items-center">
@@ -167,11 +167,13 @@ Creates advertising materials, individual photo sessions, social media content, 
 						animate="show"
 						className="mt-10 sm:mt-0 flex flex-col sm:flex-row justify-end gap-3 sm:gap-7 w-full text-black"
 					>
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-2 text-base leading-none">
 							<FaPhone className="size-5" />
-							<p>+48 733 844 534</p>
+							<a href="tel:+48733844534" className="link">
+								+48 733 844 534
+							</a>
 						</div>
-						<div className="flex items-center gap-2">
+						<div className="flex items-center gap-2 text-base leading-none">
 							<IoMail className="size-5" />
 							<a
 								target="_blank"
