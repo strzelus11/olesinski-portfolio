@@ -85,9 +85,9 @@ Creates advertising materials, individual photo sessions, social media content, 
 				)}
 			</AnimatePresence>
 			<Layout>
-				<h1 className="text-3xl sm:text-4xl medium capitalize text-center mb-5 sm:mb-7">
+				{/* <h1 className="text-3xl sm:text-4xl medium capitalize text-center mb-5 sm:mb-7">
 					{folder.name}
-				</h1>
+				</h1> */}
 				<div className="sm:columns-1 lg:columns-3 gap-3">
 					{loading ? (
 						<Spinner />
