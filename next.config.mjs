@@ -8,6 +8,11 @@ const nextConfig = {
 				hostname: "olesinski-portfolio.s3.amazonaws.com",
 				pathname: "/**",
 			},
+			{
+				protocol: "https",
+				hostname: "olesinski-portfolio.s3.us-east-1.amazonaws.com",
+				pathname: "/**",
+			},
 		],
 		loader: "default",
 	},

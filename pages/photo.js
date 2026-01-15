@@ -47,7 +47,7 @@ Creates advertising materials, individual photo sessions, social media content, 
 							}}
 						>
 							<Image
-								src={folder.images[0]}
+								src={folder.coverImage || folder.images[0]}
 								alt="folder-image"
 								width={500}
 								height={0}

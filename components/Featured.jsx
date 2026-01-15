@@ -7,7 +7,8 @@ import Spinner from "./Spinner";
 export default function SelectFeaturedImages() {
 	const [images, setImages] = useState([]);
 	const [loading, setLoading] = useState(true);
-	const [selectedImages, setSelectedImages] = useState([]);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [expanded, setExpanded] = useState(false);
 
 	function handleSelectImage(image) {
 		setSelectedImages((prev) =>
@@ -41,7 +42,11 @@ export default function SelectFeaturedImages() {
 	return (
 		<div>
 			<h2 className="text-2xl font-bold mb-4">Home Page</h2>
-			<div className="grid grid-cols-3 sm:flex flex-wrap gap-3">
+			<div
+				className={`p-2 grid grid-cols-3 sm:flex sm:flex-wrap gap-3 transition-all duration-300 ${
+					expanded ? "" : "max-h-[215px] overflow-hidden"
+				}`}
+			>
 				{loading ? (
 					<Spinner />
 				) : (
@@ -57,7 +62,7 @@ export default function SelectFeaturedImages() {
 							}`}
 							onClick={() => handleSelectImage(image)}
 						>
-							<img src={image} className="sm:w-full h-full rounded-md" alt="" />
+							<img src={image} className="h-full w-auto max-w-full rounded-md object-cover" alt="" />
 							<div
 								className={`${
 									selectedImages.some(
@@ -84,6 +89,17 @@ export default function SelectFeaturedImages() {
 					))
 				)}
 			</div>
+
+			{images?.length > 9 && (
+				<button
+					onClick={() => setExpanded((v) => !v)}
+					className="mt-3 text-sm text-gray-600 hover:text-gray-900"
+					type="button"
+				>
+					{expanded ? "Show less" : "Show more"}
+				</button>
+			)}
+
 			<button
 				onClick={handleSave}
 				className="my-4 px-4 py-2 bg-gray-500 text-white"

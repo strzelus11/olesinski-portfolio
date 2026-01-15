@@ -1,44 +1,58 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ReactSortable } from "react-sortablejs";
 import Spinner from "./Spinner";
 import toast from "react-hot-toast";
 
-export default function ImageInput({ images: initialImages, onUpdate }) {
+export default function ImageInput({
+	images: initialImages,
+	onUpdate,
+	coverImage = null,
+	onToggleCover,
+}) {
 	const [images, setImages] = useState(initialImages || []);
 	const [loading, setLoading] = useState(false);
 
+	useEffect(() => {
+		setImages(initialImages || []);
+	}, [initialImages]);
+
 	async function uploadImages(e) {
-		const files = e.target?.files;
+		const inputEl = e.currentTarget;
+		const files = inputEl?.files;
 		if (files?.length > 0) {
 			setLoading(true);
+			try {
+				const newImages = [];
+				const batchSize = 4;
+				const fileArray = Array.from(files);
 
-			const newImages = [];
-			const batchSize = 4;
-			const fileArray = Array.from(files);
+				for (let i = 0; i < fileArray.length; i += batchSize) {
+					const batch = fileArray.slice(i, i + batchSize);
+					const data = new FormData();
 
-			for (let i = 0; i < fileArray.length; i += batchSize) {
-				const batch = fileArray.slice(i, i + batchSize);
-				const data = new FormData();
+					batch.forEach((file) => data.append("file", file));
 
-				batch.forEach((file) => data.append("file", file));
-
-				try {
-					const response = await axios.post("/api/upload", data, {
-						timeout: 60000,
-					});
-					newImages.push(...response.data.links);
-				} catch (error) {
-					console.error("Error uploading batch:", error);
-					toast.error("Failed to upload some files.");
+					try {
+						const response = await axios.post("/api/upload", data, {
+							timeout: 60000,
+						});
+						newImages.push(...response.data.links);
+					} catch (error) {
+						console.error("Error uploading batch:", error);
+						toast.error("Failed to upload some files.");
+					}
 				}
-			}
 
-			const updatedImages = [...images, ...newImages];
-			setImages(updatedImages);
-			onUpdate(updatedImages);
-			toast.success("Folder updated!");
-			setLoading(false);
+				const updatedImages = [...images, ...newImages];
+				setImages(updatedImages);
+				onUpdate(updatedImages);
+				toast.success("Folder updated!");
+			} finally {
+				setLoading(false);
+				// Allow re-selecting the same file(s) again
+				if (inputEl) inputEl.value = "";
+			}
 		}
 	}
 
@@ -51,6 +65,14 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 		const updatedImages = images.filter((image) => image !== removedImage);
 		setImages(updatedImages);
 		onUpdate(updatedImages);
+		if (onToggleCover && coverImage === removedImage) {
+			// Clear cover if the cover image was deleted
+			onToggleCover(removedImage);
+		}
+	}
+
+	function isCover(link) {
+		return !!coverImage && coverImage === link;
 	}
 
 	return (
@@ -73,6 +95,10 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 					</svg>
 					Upload
 					<input
+						onClick={(e) => {
+							// Ensure selecting the same file(s) triggers onChange
+							e.currentTarget.value = "";
+						}}
 						onChange={uploadImages}
 						type="file"
 						multiple
@@ -91,32 +117,43 @@ export default function ImageInput({ images: initialImages, onUpdate }) {
 					animation={500}
 				>
 					{images?.length > 0 &&
-						images.map((link, index) => (
-							<div key={index} className="h-24 shadow-lg relative group">
-								<img
-									src={link}
-									className="sm:w-full h-full rounded-md"
-									alt=""
-								/>
+						images.map((link, index) => {
+							const selected = isCover(link);
+							return (
 								<div
-									onClick={() => removeImage(link)}
-									className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
+									key={index}
+									className={`h-24 shadow-lg relative group border-2 rounded-lg transition-all delay-100 duration-300 ${
+										selected ? "border-green-500" : "border-transparent"
+									} ${onToggleCover ? "cursor-pointer" : ""}`}
+									onClick={() => {
+										if (onToggleCover) onToggleCover(link);
+									}}
+									title={onToggleCover ? "Click to toggle cover" : undefined}
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										className="size-6"
+									<img src={link} className="sm:w-full h-full rounded-md object-cover" alt="" />
+
+									{selected && (
+										<div className="absolute -top-2 -left-2 bg-gray-50 border-2 border-green-500 rounded-full p-1 size-6 flex items-center justify-center text-green-500">
+											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+												<path fillRule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
+											</svg>
+										</div>
+									)}
+
+									<div
+										onClick={(e) => {
+											e.stopPropagation();
+											removeImage(link);
+										}}
+										className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
 									>
-										<path
-											fillRule="evenodd"
-											d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-											clipRule="evenodd"
-										/>
-									</svg>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+											<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+										</svg>
+									</div>
 								</div>
-							</div>
-						))}
+							);
+						})}
 				</ReactSortable>
 			</div>
 		</div>

@@ -27,12 +27,31 @@ export default function Folders() {
 	}
 
 	async function updateFolder(folderId, updatedImages) {
-		await axios.put(`/api/folders`, { _id: folderId, images: updatedImages });
+		const response = await axios.put(`/api/folders`, {
+			_id: folderId,
+			images: updatedImages,
+		});
 		setFolders(
 			folders.map((folder) =>
-				folder._id === folderId ? { ...folder, images: updatedImages } : folder
+				folder._id === folderId ? response.data : folder
 			)
 		);
+	}
+
+	async function toggleFolderCover(folderId, imageUrl) {
+		try {
+			const folder = folders.find((f) => f._id === folderId);
+			const nextCover = folder?.coverImage === imageUrl ? null : imageUrl;
+			const response = await axios.put(`/api/folders`, {
+				_id: folderId,
+				coverImage: nextCover,
+			});
+			setFolders(folders.map((f) => (f._id === folderId ? response.data : f)));
+			toast.success(nextCover ? "Cover selected!" : "Cover cleared!");
+		} catch (error) {
+			console.error("Failed to toggle cover image:", error);
+			toast.error("Failed to update cover.");
+		}
 	}
 
 	async function saveOrder(newOrder) {
@@ -72,7 +91,7 @@ export default function Folders() {
 					saveOrder(newOrder);
 				}}
 				animation={500}
-				className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+				className="flex flex-col gap-5"
 			>
 				{folders.map((folder) => (
 					<div key={folder._id} className="border p-4 rounded-lg bg-gray-50">
@@ -103,6 +122,10 @@ export default function Folders() {
 						</p>
 						<ImageInput
 							images={folder.images}
+							coverImage={folder.coverImage}
+							onToggleCover={(imageUrl) =>
+								toggleFolderCover(folder._id, imageUrl)
+							}
 							onUpdate={(updatedImages) =>
 								updateFolder(folder._id, updatedImages)
 							}
