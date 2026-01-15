@@ -20,39 +20,79 @@ export default function ImageInput({
 	async function uploadImages(e) {
 		const inputEl = e.currentTarget;
 		const files = inputEl?.files;
-		if (files?.length > 0) {
-			setLoading(true);
-			try {
-				const newImages = [];
-				const batchSize = 4;
-				const fileArray = Array.from(files);
+		if (!files || files.length === 0) return;
 
-				for (let i = 0; i < fileArray.length; i += batchSize) {
-					const batch = fileArray.slice(i, i + batchSize);
-					const data = new FormData();
+		setLoading(true);
 
-					batch.forEach((file) => data.append("file", file));
+		// Optional: show progress in UI if you have a state for it
+		// setUploadProgress({ done: 0, total: files.length });
 
-					try {
-						const response = await axios.post("/api/upload", data, {
-							timeout: 60000,
-						});
-						newImages.push(...response.data.links);
-					} catch (error) {
-						console.error("Error uploading batch:", error);
-						toast.error("Failed to upload some files.");
-					}
+		const fileArray = Array.from(files);
+		const batchSize = 2; // keep smaller for Vercel/serverless stability
+		let uploadedLinks = [];
+		let failedCount = 0;
+
+		// One “loading” toast that we update (much nicer UX)
+		const toastId = toast.loading(`Uploading 0 / ${fileArray.length}...`);
+
+		try {
+			for (let i = 0; i < fileArray.length; i += batchSize) {
+				const batch = fileArray.slice(i, i + batchSize);
+				const data = new FormData();
+				batch.forEach((file) => data.append("file", file));
+
+				try {
+					const response = await axios.post("/api/upload", data, {
+						timeout: 120000,
+					});
+
+					const links = response?.data?.links || [];
+					uploadedLinks.push(...links);
+				} catch (error) {
+					failedCount += batch.length;
+
+					// Log real server response if present (useful for debugging)
+					console.error(
+						"Upload batch failed:",
+						error?.response?.status,
+						error?.response?.data,
+						error?.message
+					);
 				}
 
-				const updatedImages = [...images, ...newImages];
-				setImages(updatedImages);
-				onUpdate(updatedImages);
-				toast.success("Folder updated!");
-			} finally {
-				setLoading(false);
-				// Allow re-selecting the same file(s) again
-				if (inputEl) inputEl.value = "";
+				const done = Math.min(i + batchSize, fileArray.length);
+				toast.loading(`Uploading ${done} / ${fileArray.length}...`, {
+					id: toastId,
+				});
+
+				// Optional: update progress state
+				// setUploadProgress({ done, total: fileArray.length });
 			}
+
+			// If nothing uploaded, do NOT update folder and show a clean error
+			if (uploadedLinks.length === 0) {
+				toast.error("Upload failed. No files were uploaded.", { id: toastId });
+				return;
+			}
+
+			const updatedImages = [...images, ...uploadedLinks];
+			setImages(updatedImages);
+			onUpdate(updatedImages);
+
+			// Single final toast (no double messages)
+			if (failedCount > 0) {
+				toast.success(
+					`Uploaded ${uploadedLinks.length} file(s). Failed: ${failedCount}.`,
+					{ id: toastId }
+				);
+			} else {
+				toast.success(`Uploaded ${uploadedLinks.length} file(s).`, {
+					id: toastId,
+				});
+			}
+		} finally {
+			setLoading(false);
+			if (inputEl) inputEl.value = ""; // allow reselecting same files
 		}
 	}
 
@@ -130,12 +170,25 @@ export default function ImageInput({
 									}}
 									title={onToggleCover ? "Click to toggle cover" : undefined}
 								>
-									<img src={link} className="sm:w-full h-full rounded-md object-cover" alt="" />
+									<img
+										src={link}
+										className="sm:w-full h-full rounded-md object-cover"
+										alt=""
+									/>
 
 									{selected && (
 										<div className="absolute -top-2 -left-2 bg-gray-50 border-2 border-green-500 rounded-full p-1 size-6 flex items-center justify-center text-green-500">
-											<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-												<path fillRule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 24 24"
+												fill="currentColor"
+												className="size-6"
+											>
+												<path
+													fillRule="evenodd"
+													d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+													clipRule="evenodd"
+												/>
 											</svg>
 										</div>
 									)}
@@ -147,8 +200,17 @@ export default function ImageInput({
 										}}
 										className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
 									>
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-											<path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+										<svg
+											xmlns="http://www.w3.org/2000/svg"
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											className="size-6"
+										>
+											<path
+												fillRule="evenodd"
+												d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+												clipRule="evenodd"
+											/>
 										</svg>
 									</div>
 								</div>

@@ -29,7 +29,14 @@ function getS3Client() {
 
 	const accessKeyId = clean(rawAccessKeyId);
 	const secretAccessKey = clean(rawSecretAccessKey);
-	const sessionToken = rawSessionToken ? clean(rawSessionToken) : undefined;
+	let sessionToken = rawSessionToken ? clean(rawSessionToken) : undefined;
+
+	// Session tokens are ONLY valid for temporary credentials (typically access keys starting with ASIA).
+	// If we ever have a stray token in the environment while using AKIA keys, AWS can return
+	// "The provided token is malformed or otherwise invalid.".
+	if (sessionToken && !String(accessKeyId).startsWith("ASIA")) {
+		sessionToken = undefined;
+	}
 
 	if (!accessKeyId || !secretAccessKey) {
 		throw new Error(
@@ -44,7 +51,9 @@ function getS3Client() {
 		"region:",
 		region,
 		"bucket:",
-		bucket
+		bucket,
+		"sessionToken:",
+		Boolean(rawSessionToken)
 	);
 
 	return new S3Client({
