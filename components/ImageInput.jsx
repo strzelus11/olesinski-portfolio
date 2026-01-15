@@ -155,6 +155,8 @@ export default function ImageInput({
 					list={images}
 					setList={updateImagesOrder}
 					animation={500}
+					filter=".sortable-ignore"
+					preventOnFilter={true}
 				>
 					{images?.length > 0 &&
 						images.map((link, index) => {
@@ -177,7 +179,7 @@ export default function ImageInput({
 									/>
 
 									{selected && (
-										<div className="absolute -top-2 -left-2 bg-gray-50 border-2 border-green-500 rounded-full p-1 size-6 flex items-center justify-center text-green-500">
+										<div className="sortable-ignore absolute -top-2 -left-2 bg-gray-50 border-2 border-green-500 rounded-full p-1 size-6 flex items-center justify-center text-green-500">
 											<svg
 												xmlns="http://www.w3.org/2000/svg"
 												viewBox="0 0 24 24"
@@ -194,11 +196,24 @@ export default function ImageInput({
 									)}
 
 									<div
+										className="sortable-ignore sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
+										onPointerDown={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+										}}
+										onMouseDown={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+										}}
+										onTouchStart={(e) => {
+											e.preventDefault();
+											e.stopPropagation();
+										}}
 										onClick={(e) => {
+											e.preventDefault();
 											e.stopPropagation();
 											removeImage(link);
 										}}
-										className="sm:opacity-0 group-hover:opacity-100 transition-all delay-100 duration-300 absolute -top-2 -right-2 bg-gray-50 border border-color-300 rounded-full p-1 size-6 flex items-center justify-center text-color-700 cursor-pointer"
 									>
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
