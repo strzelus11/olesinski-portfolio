@@ -16,19 +16,42 @@ const bucket = process.env.AWS_S3_BUCKET || "olesinski-portfolio";
 const region = process.env.AWS_REGION || "us-east-1";
 
 function getS3Client() {
-	const accessKeyId = process.env.AWS_ACCESS_KEY_ID || process.env.ACCESS_KEY;
-	const secretAccessKey =
-		process.env.AWS_SECRET_ACCESS_KEY || process.env.SECRET_KEY;
+	const rawAccessKeyId =
+		process.env.AWS_ACCESS_KEY_ID ?? process.env.ACCESS_KEY ?? "";
+	const rawSecretAccessKey =
+		process.env.AWS_SECRET_ACCESS_KEY ?? process.env.SECRET_KEY ?? "";
+	const rawSessionToken =
+		process.env.AWS_SESSION_TOKEN ?? process.env.SESSION_TOKEN ?? "";
+
+	// Hosting dashboards sometimes store values with quotes or trailing newlines.
+	const clean = (v) =>
+		String(v).trim().replace(/^"|"$/g, "").replace(/^'|'$/g, "");
+
+	const accessKeyId = clean(rawAccessKeyId);
+	const secretAccessKey = clean(rawSecretAccessKey);
+	const sessionToken = rawSessionToken ? clean(rawSessionToken) : undefined;
 
 	if (!accessKeyId || !secretAccessKey) {
 		throw new Error(
-			"Missing AWS credentials. Set AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY (or legacy ACCESS_KEY/SECRET_KEY)."
+			"Missing AWS credentials. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY (or legacy ACCESS_KEY/SECRET_KEY)."
 		);
 	}
 
+	// Safe debug log (never log the secret). Helps diagnose prod env issues.
+	console.log(
+		"[upload] AWS creds present:",
+		`${accessKeyId.slice(0, 4)}…${accessKeyId.slice(-4)}`,
+		"region:",
+		region,
+		"bucket:",
+		bucket
+	);
+
 	return new S3Client({
 		region,
-		credentials: { accessKeyId, secretAccessKey },
+		credentials: sessionToken
+			? { accessKeyId, secretAccessKey, sessionToken }
+			: { accessKeyId, secretAccessKey },
 	});
 }
 
@@ -134,7 +157,20 @@ export default async function handle(req, res) {
 		const message = err instanceof Error ? err.message : "Upload failed";
 		// multiparty uses specific errors for size limits
 		const status = /maxFilesSize/i.test(message) ? 413 : 500;
-		return res.status(status).json({ error: message });
+
+		// Help debug AWS auth issues in prod without leaking secrets
+		const maybeAwsAuth =
+			/Access Key Id|InvalidAccessKeyId|SignatureDoesNotMatch|security token/i.test(
+				message
+			);
+		return res.status(status).json({
+			error: message,
+			...(maybeAwsAuth
+				? {
+						hint: "Check AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY (and AWS_SESSION_TOKEN if using temporary ASIA keys) in the production environment and redeploy.",
+				  }
+				: {}),
+		});
 	}
 }
 
