@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { fadeIn } from "../motion";
 import Link from "next/link";
 import Head from "next/head";
-import Image from "next/image";
+import NextImage from "next/image";
 
 export default function PhotoPage() {
 	const [folders, setFolders] = useState([]);
@@ -31,39 +31,48 @@ Creates advertising materials, individual photo sessions, social media content, 
 					transition={{ duration: 1 }}
 					className="w-full flex flex-col gap-2 sm:gap-5 lg:grid grid-cols-2"
 				>
-					{folders.map((folder, index) => (
-						<motion.div
-							key={folder._id}
-							className="w-full aspect-[3/2] rounded overflow-hidden cursor-pointer relative group"
-							variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
-							initial="hidden"
-							animate="show"
-							whileHover={{
-								scale: 1.01,
-							}}
-							transition={{
-								ease: "easeInOut",
-								duration: 0.5,
-							}}
-						>
-							<Image
-								src={folder.coverImage || folder.images[0]}
-								alt="folder-image"
-								width={500}
-								height={0}
-								className="rounded-md object-cover w-full h-full"
-								loading="lazy"
-							/>
-							<div className="absolute inset-0 bg-black/60 sm:opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
-								<Link
-									className="text-4xl medium text-white folder-link"
-									href={`/folders/${folder._id}`}
-								>
-									{folder.name}
-								</Link>
-							</div>
-						</motion.div>
-					))}
+					{folders.map((folder, index) => {
+						const coverSrc =
+							folder.effectiveCoverImage || folder.coverImage || folder.images?.[0] || null;
+						const href = folder.slug ? `/folders/${folder.slug}` : `/folders/${folder._id}`;
+						return (
+							<motion.div
+								key={folder._id}
+								className="w-full aspect-[3/2] rounded overflow-hidden cursor-pointer relative group"
+								variants={fadeIn("down", "spring", 0.1 * index, 1.5)}
+								initial="hidden"
+								animate="show"
+								whileHover={{
+									scale: 1.01,
+								}}
+								transition={{
+									ease: "easeInOut",
+									duration: 0.5,
+								}}
+							>
+								{coverSrc ? (
+									<NextImage
+										src={coverSrc}
+										alt={`${folder.name} cover`}
+										fill
+										sizes="(min-width: 1024px) 50vw, 100vw"
+										className="object-cover"
+										priority={index < 2}
+									/>
+								) : (
+									<div className="absolute inset-0 bg-gray-200" />
+								)}
+								<div className="absolute inset-0 bg-black/60 sm:opacity-0 transition-all duration-500 delay-150 group-hover:opacity-100 flex justify-center items-center">
+									<Link
+										className="text-4xl medium text-white folder-link"
+										href={href}
+									>
+										{folder.name}
+									</Link>
+								</div>
+							</motion.div>
+						);
+					})}
 				</div>
 			</motion.div>
 		</Layout>

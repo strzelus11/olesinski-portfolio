@@ -1,6 +1,14 @@
 import { mongooseConnect } from "lib/mongoose";
 import { Folder } from "models/Folder";
 
+function slugify(text) {
+	return text
+		.toLowerCase()
+		.trim()
+		.replace(/[^\w\s-]/g, "")
+		.replace(/\s+/g, "-");
+}
+
 function withEffectiveCover(folderDoc) {
 	if (!folderDoc) return folderDoc;
 	const obj = folderDoc.toObject ? folderDoc.toObject() : folderDoc;
@@ -15,17 +23,24 @@ export default async function handle(req, res) {
 	await mongooseConnect();
 
 	if (method === "GET") {
-		const { _id } = req.query;
+		const { _id, slug } = req.query;
 
 		try {
+			// Single folder by id
 			if (_id) {
 				const folder = await Folder.findById(_id);
-				if (!folder) {
-					return res.status(404).json({ error: "Folder not found" });
-				}
+				if (!folder) return res.status(404).json({ error: "Folder not found" });
 				return res.json(withEffectiveCover(folder));
 			}
 
+			// Single folder by slug
+			if (slug) {
+				const folder = await Folder.findOne({ slug });
+				if (!folder) return res.status(404).json({ error: "Folder not found" });
+				return res.json(withEffectiveCover(folder));
+			}
+
+			// List folders
 			const folders = await Folder.find().sort({ order: 1 });
 			return res.json(folders.map(withEffectiveCover));
 		} catch (error) {
@@ -36,11 +51,19 @@ export default async function handle(req, res) {
 
 	if (method === "POST") {
 		const { name, order } = req.body;
-		if (!name) {
-			return res.status(400).json({ error: "Folder name is required" });
-		}
-		const folder = await Folder.create({ name, images: [], coverImage: null, order });
-		return res.json(withEffectiveCover(folder));
+		if (!name) return res.status(400).json({ error: "Name required" });
+
+		const slug = slugify(name);
+
+		const folder = await Folder.create({
+			name,
+			slug,
+			images: [],
+			coverImage: null,
+			order,
+		});
+
+		return res.json(folder);
 	}
 
 	if (method === "PUT") {
@@ -62,8 +85,21 @@ export default async function handle(req, res) {
 		// Determine the next coverImage value:
 		// - if coverImage is explicitly provided (including null), use it
 		// - otherwise keep existing
-		const nextCover =
-			req.body.hasOwnProperty("coverImage") ? coverImage : existing.coverImage;
+		let nextCover = req.body.hasOwnProperty("coverImage")
+			? coverImage
+			: existing.coverImage;
+
+		// If the client is updating images (not cover) and the current cover was removed,
+		// automatically clear the cover so we don't block deletions.
+		if (!req.body.hasOwnProperty("coverImage")) {
+			if (
+				typeof nextCover === "string" &&
+				nextCover &&
+				!nextImages.includes(nextCover)
+			) {
+				nextCover = null;
+			}
+		}
 
 		// Validate cover image belongs to folder images (unless null)
 		if (nextCover !== null && typeof nextCover !== "undefined") {

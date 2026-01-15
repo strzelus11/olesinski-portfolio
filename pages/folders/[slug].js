@@ -1,6 +1,5 @@
 import Layout from "../../components/Layout";
 import axios from "axios";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeIn } from "../../motion";
 import { ReactSortable } from "react-sortablejs";
@@ -11,7 +10,7 @@ import Spinner from "components/Spinner";
 import ImageBackdrop from "components/ImageBackdrop";
 import Head from "next/head";
 
-export default function FolderPage({ folderId }) {
+export default function FolderPage({ slug }) {
 	const [images, setImages] = useState([]);
 	const [fullImage, setFullImage] = useState(null);
 	const [folder, setFolder] = useState({});
@@ -20,24 +19,36 @@ export default function FolderPage({ folderId }) {
 	const session = useSession();
 
 	useEffect(() => {
-		setLoading(true);
-		try {
-			axios.get(`/api/folders/?_id=${folderId}`).then((response) => {
+		let cancelled = false;
+
+		(async () => {
+			setLoading(true);
+			try {
+				// API supports slug lookup (api is assumed updated)
+				const response = await axios.get(`/api/folders`, {
+					params: { slug },
+				});
+				if (cancelled) return;
 				setImages(response.data?.images || []);
-				setFolder(response.data);
-			});
-		} catch (error) {
-			console.error("Error fetching folder data:", error);
-			toast.error("Failed to load folder data.");
-		} finally {
-			setLoading(false);
-		}
-	}, [folderId]);
+				setFolder(response.data || {});
+			} catch (error) {
+				console.error("Error fetching folder data:", error);
+				if (!cancelled) toast.error("Failed to load folder data.");
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [slug]);
 
 	async function saveOrder(newOrder) {
+		if (!folder?._id) return;
 		try {
 			const response = await axios.put(`/api/folders`, {
-				_id: folderId,
+				_id: folder?._id,
 				images: newOrder,
 			});
 			if (response.status === 200) {
@@ -66,8 +77,9 @@ Creates advertising materials, individual photo sessions, social media content, 
 				{fullImage !== null && (
 					<ImageBackdrop handleClose={() => setFullImage(null)}>
 						<img
-							className="max-h-[90vh] w-full object-cover rounded-lg"
+							className="max-h-[90dvh] w-auto h-auto object-contain rounded-lg"
 							src={fullImage}
+							decoding="async"
 						/>
 					</ImageBackdrop>
 				)}
@@ -121,14 +133,13 @@ Creates advertising materials, individual photo sessions, social media content, 
 								}}
 								className="mb-2 sm:mb-3 relative"
 							>
-								<Image
+								<img
 									onClick={() => setFullImage(image)}
 									src={image}
 									alt={`Image ${index + 1}`}
-									width={500}
-									height={0}
-									className="rounded-md object-cover"
-									loading="lazy"
+									className="w-full h-auto rounded-md object-cover cursor-zoom-in"
+									loading={index < 2 ? "eager" : "lazy"}
+									decoding="async"
 								/>
 							</motion.div>
 						))
@@ -140,11 +151,11 @@ Creates advertising materials, individual photo sessions, social media content, 
 }
 
 export async function getServerSideProps(context) {
-	const { id: folderId } = context.params;
+	const { slug } = context.params;
 
 	return {
 		props: {
-			folderId,
+			slug,
 		},
 	};
 }
