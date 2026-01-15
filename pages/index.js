@@ -29,11 +29,15 @@ export default function Home() {
 					? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
 					: "md:columns-2 lg:columns-3"
 				: isMobile
-					? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
-					: "md:columns-2 lg:columns-3";
+				? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+				: "md:columns-2 lg:columns-3";
 
 		return (
-			<div className={containerClass} aria-busy="true" aria-label="Loading gallery">
+			<div
+				className={containerClass}
+				aria-busy="true"
+				aria-label="Loading gallery"
+			>
 				{Array.from({ length: SKELETON_COUNT }).map((_, i) => {
 					const tall = i % 3 === 0;
 					return (
@@ -66,6 +70,52 @@ export default function Home() {
 		}
 	}
 
+	function deriveOrientation(img) {
+		// Prefer stored orientation, otherwise compute from dimensions
+		if (img?.orientation === "horizontal" || img?.orientation === "vertical") return img.orientation;
+		if (typeof img?.width === "number" && typeof img?.height === "number" && img.height > 0) {
+			return img.width >= img.height ? "horizontal" : "vertical";
+		}
+		return null;
+	}
+
+	async function enrichImagesWithDimensions(items) {
+		// Only enrich items that are missing orientation or dimensions
+		const tasks = (items || []).map(
+			(img) =>
+				new Promise((resolve) => {
+					const existingOrientation = deriveOrientation(img);
+					if (existingOrientation && img?.width && img?.height) {
+						return resolve({ ...img, orientation: existingOrientation });
+					}
+
+					const src = img?.url;
+					if (!src) return resolve({ ...img, orientation: existingOrientation || "vertical" });
+
+					const im = new Image();
+					im.decoding = "async";
+					im.onload = () => {
+						const w = im.naturalWidth;
+						const h = im.naturalHeight;
+						const orientation = w >= h ? "horizontal" : "vertical";
+						resolve({
+							...img,
+							width: img.width || w,
+							height: img.height || h,
+							orientation,
+						});
+					};
+					im.onerror = () => {
+						// Fallback: assume vertical to avoid oversized spans
+						resolve({ ...img, orientation: existingOrientation || "vertical" });
+					};
+					im.src = src;
+				})
+		);
+
+		return Promise.all(tasks);
+	}
+
 	useEffect(() => {
 		let cancelled = false;
 
@@ -73,8 +123,11 @@ export default function Home() {
 			setLoading(true);
 			try {
 				const response = await axios.get("/api/featured");
+				const raw = response.data.images || [];
+				// Ensure orientation exists so mobile col-spans work
+				const enriched = await enrichImagesWithDimensions(raw);
 				if (cancelled) return;
-				setImages(response.data.images || []);
+				setImages(enriched);
 			} catch (error) {
 				console.error("Failed to fetch images:", error);
 				if (!cancelled) toast.error("Failed to load gallery.");
@@ -147,7 +200,7 @@ Creates advertising materials, individual photo sessions, social media content, 
 										initial="hidden"
 										animate="show"
 										className={`mb-2 sm:mb-3 relative w-full ${
-											image.orientation === "horizontal"
+											(deriveOrientation(image) || "vertical") === "horizontal"
 												? "col-span-2"
 												: "col-span-1"
 										}`}
@@ -174,7 +227,7 @@ Creates advertising materials, individual photo sessions, social media content, 
 										ease: "easeInOut",
 									}}
 									className={`mb-2 sm:mb-3 relative ${
-										image.orientation === "horizontal"
+										(deriveOrientation(image) || "vertical") === "horizontal"
 											? "col-span-2"
 											: "col-span-1"
 									}`}
@@ -186,7 +239,9 @@ Creates advertising materials, individual photo sessions, social media content, 
 										width={image.width || 500}
 										height={
 											image.height ||
-											(image.orientation === "horizontal" ? 333 : 750)
+											((deriveOrientation(image) || "vertical") === "horizontal"
+												? 333
+												: 750)
 										}
 										sizes={
 											isMobile
