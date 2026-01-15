@@ -20,6 +20,35 @@ export default function Home() {
 	const session = useSession();
 	const isMobile = useIsMobile();
 
+	const SKELETON_COUNT = 12;
+
+	function GallerySkeleton() {
+		const containerClass =
+			session.status !== "authenticated"
+				? isMobile
+					? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+					: "md:columns-2 lg:columns-3"
+				: isMobile
+					? "grid grid-cols-2 gap-x-2 sm:gap-x-3"
+					: "md:columns-2 lg:columns-3";
+
+		return (
+			<div className={containerClass} aria-busy="true" aria-label="Loading gallery">
+				{Array.from({ length: SKELETON_COUNT }).map((_, i) => {
+					const tall = i % 3 === 0;
+					return (
+						<div
+							key={i}
+							className={`mb-2 sm:mb-3 rounded-md bg-gray-200/60 animate-pulse ${
+								tall ? "h-72" : "h-48"
+							}`}
+						/>
+					);
+				})}
+			</div>
+		);
+	}
+
 	async function saveOrder(newOrder) {
 		try {
 			const response = await axios.post("/api/featured", {
@@ -38,16 +67,25 @@ export default function Home() {
 	}
 
 	useEffect(() => {
-		setLoading(true);
-		try {
-			axios
-				.get("/api/featured")
-				.then((response) => setImages(response.data.images));
-		} catch (error) {
-			console.error("Failed to fetch images:", error);
-		} finally {
-			setLoading(false);
-		}
+		let cancelled = false;
+
+		(async () => {
+			setLoading(true);
+			try {
+				const response = await axios.get("/api/featured");
+				if (cancelled) return;
+				setImages(response.data.images || []);
+			} catch (error) {
+				console.error("Failed to fetch images:", error);
+				if (!cancelled) toast.error("Failed to load gallery.");
+			} finally {
+				if (!cancelled) setLoading(false);
+			}
+		})();
+
+		return () => {
+			cancelled = true;
+		};
 	}, []);
 
 	return (
@@ -73,7 +111,7 @@ Creates advertising materials, individual photo sessions, social media content, 
 			</AnimatePresence>
 			<Layout>
 				{loading ? (
-					<Spinner />
+					<GallerySkeleton />
 				) : (
 					<div
 						className={
@@ -119,6 +157,8 @@ Creates advertising materials, individual photo sessions, social media content, 
 											src={image.url}
 											className="w-full h-auto rounded-md cursor-grab"
 											alt=""
+											loading={index < 4 ? "eager" : "lazy"}
+											decoding="async"
 										/>
 									</motion.div>
 								))}
@@ -142,11 +182,20 @@ Creates advertising materials, individual photo sessions, social media content, 
 									<NextImage
 										onClick={() => setFullImage(image)}
 										src={image.url}
-										alt={index}
-										width={500}
-										height={0}
-										className="rounded-md object-cover"
-										loading="lazy"
+										alt={"Featured photo"}
+										width={image.width || 500}
+										height={
+											image.height ||
+											(image.orientation === "horizontal" ? 333 : 750)
+										}
+										sizes={
+											isMobile
+												? "50vw"
+												: "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+										}
+										priority={index < 2}
+										className="rounded-md object-cover cursor-zoom-in"
+										loading={index < 2 ? "eager" : "lazy"}
 									/>
 								</motion.div>
 							))
