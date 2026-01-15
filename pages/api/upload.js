@@ -115,7 +115,6 @@ export default async function handle(req, res) {
 					// IMPORTANT:
 					// Using ACL here requires bucket settings that allow ACLs.
 					// If your bucket has "Object Ownership: Bucket owner enforced", remove ACL.
-					ACL: "public-read",
 					CacheControl: "public, max-age=31536000, immutable",
 				})
 			);
